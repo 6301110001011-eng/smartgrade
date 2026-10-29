@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5B2D90">
+<title>Smart Grade</title>
+<style>
+:root{
+  --p:#5B2D90;--p2:#7E57C2;--pl:#EDE7F6;--bg:#F6F3FB;--card:#fff;--tx:#222;--mu:#6b6478;--bd:#E2DAEE;
+  --g:#2E7D32;--gl:#DFF5E3;--r:#C62828;--rl:#FDE2E2;--y:#8D6E00;--yl:#FFF3C4;--o:#E65100;--ol:#FFE0B2;--b:#1565C0;--bl:#E3F2FD;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:"Sarabun","Leelawadee UI","Thonburi","Tahoma",sans-serif;font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--p);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:5}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:1300px;margin:auto}
+.brand{font-weight:800;font-size:20px;margin-right:auto}
+.brand small{font-weight:400;opacity:.8;font-size:13px;margin-left:6px}
+.pick{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pick label{font-size:13px;opacity:.85}
+header select{background:#fff;color:var(--p);border:0;border-radius:8px;padding:6px 10px;font-weight:700;max-width:70vw}
+nav{display:flex;gap:4px;overflow-x:auto;max-width:1300px;margin:10px auto 0;scrollbar-width:none}
+nav button{background:transparent;border:0;color:#fff;opacity:.75;padding:8px 14px;border-radius:999px;white-space:nowrap;cursor:pointer}
+nav button.on{background:#fff;color:var(--p);opacity:1;font-weight:700}
+main{max-width:1300px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:16px}
+h2{margin:0 0 12px;font-size:19px;color:var(--p)}
+h3{margin:0 0 10px;font-size:16px;color:var(--p)}
+.mu{color:var(--mu);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{border-radius:14px;padding:14px;text-align:center}
+.kpi .l{font-size:13px;font-weight:700}
+.kpi .v{font-size:30px;font-weight:800;line-height:1.3}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.tw{overflow:auto;border:1px solid var(--bd);border-radius:10px;max-height:75vh}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--bd);padding:7px 8px;text-align:center;white-space:nowrap}
+th{background:var(--pl);color:var(--p);position:sticky;top:0;font-weight:700;z-index:1}
+td.nm,th.nm{text-align:left;position:sticky;left:0;background:#fff;z-index:2;min-width:170px}
+th.nm{background:var(--pl);z-index:3}
+tr:hover td{background:#faf8fd}
+table.sc th{white-space:normal;font-size:12px;line-height:1.25;min-width:64px;max-width:96px;vertical-align:bottom}
+table.sc th.sum,table.sc td.sum{background:#F3EEFA}
+table.sc th.tot,table.sc td.tot{background:#E6DCF5;font-weight:800}
+table.sc th small{display:block;font-weight:800;font-size:12px;margin-top:2px}
+input.sc{width:56px;text-align:center;border:1px solid var(--bd);border-radius:6px;padding:5px 2px;background:#FFFDF2}
+input.sc.bad{border-color:var(--r);background:var(--rl)}
+input.tx,select.tx{border:1px solid var(--bd);border-radius:8px;padding:8px 10px;width:100%;background:#FFFDF2}
+.btn{border:0;border-radius:10px;padding:9px 16px;background:var(--p);color:#fff;font-weight:700;cursor:pointer}
+.btn.s{background:var(--pl);color:var(--p)}
+.btn.d{background:var(--rl);color:var(--r)}
+.btn.sm{padding:5px 10px;font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;font-size:14px}
+.att{display:flex;gap:4px;justify-content:center}
+.att button{width:38px;height:36px;border-radius:8px;border:1px solid var(--bd);background:#fff;cursor:pointer;font-weight:700;color:var(--mu)}
+.att button.on.ม{background:var(--gl);color:var(--g);border-color:var(--g)}
+.att button.on.ส{background:var(--ol);color:var(--o);border-color:var(--o)}
+.att button.on.ล,.att button.on.ป{background:var(--bl);color:var(--b);border-color:var(--b)}
+.att button.on.ข{background:var(--rl);color:var(--r);border-color:var(--r)}
+.st{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;cursor:pointer;min-width:84px;font-weight:700;background:#fff}
+.st.ok{background:var(--gl);color:var(--g)}.st.late{background:var(--yl);color:var(--y)}.st.no{background:var(--rl);color:var(--r)}
+.bar{height:10px;background:var(--pl);border-radius:6px;overflow:hidden;min-width:70px}
+.bar i{display:block;height:100%;background:var(--p2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin-top:8px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend b{width:12px;height:12px;border-radius:3px;display:inline-block}
+.empty{padding:28px;text-align:center;color:var(--mu)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;z-index:20}
+.toast.on{opacity:.95}
+.warn{background:var(--yl);color:#5d4a00;border-radius:10px;padding:10px 14px;font-size:14px;margin-bottom:16px}
+textarea{width:100%;min-height:120px;border:1px solid var(--bd);border-radius:8px;padding:10px;background:#FFFDF2}
+.tick{width:40px;height:36px;border-radius:8px;border:1.5px solid var(--bd);background:#fff;cursor:pointer;font-weight:800;font-size:18px;color:var(--g)}
+.tick.on{background:var(--gl);border-color:var(--g)}
+.modal{position:fixed;inset:0;background:rgba(30,15,50,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
+.modal .box{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal p{margin:0 0 14px;font-size:16px;line-height:1.5}
+.modal .row{justify-content:flex-end;margin:14px 0 0}
+tr.foot th{position:static;background:#E6DCF5}
+tr.foot th.nm{position:sticky;left:0;z-index:2}
+.flagr{color:var(--r);font-weight:700}
+.chip{display:inline-block;background:var(--pl);color:var(--p);border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;margin-left:6px}
+@media(max-width:560px){main{padding:10px}.card{padding:12px}td.nm,th.nm{min-width:120px}.att{gap:2px}.att button{width:31px;height:34px}th,td{padding:6px 5px}.kpi .v{font-size:24px}}
+@media print{header,.noprint{display:none!important}main{padding:0}.card{border:0}.tw{max-height:none}}
+.wsheet{background:#FBF9FE;border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin:12px 0}
+.wsheet h3{margin:0 0 6px;font-size:18px}
+.wmeta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:6px 0 10px}
+.wmeta span{background:#fff;border:1px solid var(--bd);border-radius:999px;padding:2px 10px}
+.wsheet ol{margin:6px 0 10px;padding-left:22px;line-height:1.6}
+.wsheet table{max-width:520px}
+.wsheet td{white-space:normal;text-align:left}
+.wsheet td.pt{text-align:center;width:70px;font-weight:700}
+details.wedit{margin-top:10px}
+details.wedit summary{cursor:pointer;color:var(--p);font-weight:700}
+details.wedit textarea{min-height:90px;background:#fff}
+input.ws{width:58px}
+.exwrap{display:grid;gap:14px}.exw{overflow-x:auto}.exsvg{width:100%;height:auto;display:block;margin:auto}
+.mmb{background:#fff;border:3px solid;border-radius:14px;padding:6px 10px;font-size:14px;line-height:1.35;height:100%;box-sizing:border-box;overflow:hidden;font-family:inherit}
+.mmb b{display:block;font-size:17px;margin-bottom:2px}
+.mmc{color:#fff;font-weight:800;font-size:19px;text-align:center;display:flex;align-items:center;justify-content:center;height:100%;line-height:1.25;padding:0 8px;font-family:inherit}
+.excomic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cp{border:3px solid #222;border-radius:10px;padding:10px;background:#FFFDF5;position:relative;display:flex;flex-direction:column;gap:8px;min-height:210px}
+.cp .art{font-size:54px;text-align:center;line-height:1.15}.cn{position:absolute;top:4px;left:9px;font-weight:800}
+.cp .say{background:#fff;border:2px solid #222;border-radius:16px;padding:6px 12px;font-weight:700;align-self:center;text-align:center}
+.cp .cap{background:#FFF59D;border:2px solid #222;padding:6px 8px;font-size:14px;margin-top:auto}
+.exbook{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pg{border:1.5px solid #bbb;border-radius:6px;padding:8px;background:#fff;aspect-ratio:3/4;font-size:13px;line-height:1.4;position:relative;box-shadow:2px 2px 0 #ddd;overflow:hidden}
+.pg .art{font-size:30px;text-align:center}.pg b{display:block;color:#5B2D90;margin:2px 0 4px;font-size:14px}.pg.cover{background:#EDE7F6;text-align:center}
+.pn{position:absolute;bottom:4px;right:8px;font-size:11px;color:#888}
+.exinfo{border:3px solid var(--ic);border-radius:14px;overflow:hidden;background:#fff}
+.ih{background:var(--ic);color:#fff;font-size:20px;font-weight:800;padding:10px 14px}.ih small{display:block;font-size:13px;font-weight:400;opacity:.9}
+.ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;padding:12px}
+.is{background:#F7F9FC;border-radius:10px;padding:10px}.is .ii{font-size:30px}.is ul{margin:4px 0 0;padding-left:18px;font-size:14px}
+.if{border-top:1px dashed #ccc;padding:8px 14px;font-size:13px;color:#555}
+.excards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.ec{border:2px solid var(--bd);border-radius:12px;padding:10px;background:#fff;font-size:14px;line-height:1.5}.ec .art{font-size:34px;text-align:center}.ec b{display:block;color:var(--p);margin:4px 0}
+.extbl{background:#fff}.extbl td,.extbl th{white-space:normal;text-align:left;border:1px solid var(--bd);position:static}
+.exh{font-weight:700;margin-bottom:6px;color:var(--p)}
+.excalc{background:#FFFDE7;border-left:5px solid #F9A825;padding:8px 12px;border-radius:6px;font-size:15px;line-height:1.6}
+.extip{background:#E8F5E9;border-radius:10px;padding:8px 12px;font-size:14px}.extip ul{margin:4px 0 0;padding-left:20px}
+.exnote{font-size:13px;color:var(--mu);margin:0}
+.exposter{border:3px solid #5B2D90;border-radius:12px;padding:10px;background:#fff;max-width:640px;margin:auto}
+.exposter .pt{background:#5B2D90;color:#fff;text-align:center;font-weight:800;font-size:17px;padding:8px;border-radius:8px}
+.pgd{display:grid;grid-template-areas:"a d d" "b d d" "c e f";grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.pb{border:2px dashed #9575CD;border-radius:8px;padding:8px;font-size:13px;min-height:70px;background:#F8F5FD}.pb b{display:block;color:#5B2D90}.pb.big{background:#EDE7F6}
+.pfoot{text-align:center;font-size:12px;color:#666}
+.exbox{border:2px solid #FFB74D;background:#FFF8E1;border-radius:12px;padding:12px 14px;margin:12px 0}
+.exbox>h3{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.exfull{position:fixed;inset:0;background:#fff;z-index:40;overflow:auto;padding:16px}
+.exfull .in{max-width:1200px;margin:auto;font-size:18px}.exfull .ec,.exfull .is ul,.exfull .cp .cap,.exfull .extip,.exfull .pg{font-size:17px}
+@media(max-width:700px){.exbook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.excomic{grid-template-columns:1fr}}
+body.pw{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printArea .exsvg{min-width:0!important}#printArea .exw{overflow:visible}#printArea .exbox{break-inside:auto}#printArea .exbook,#printArea .excomic,#printArea .exinfo,#printArea svg{break-inside:avoid}
+#printArea{display:none}
+body.pw header,body.pw main,body.pw .toast{display:none!important}
+body.pw #printArea{display:block;padding:0 6mm;font-size:15px;color:#000}
+#printArea .pw1{break-inside:avoid;border:1.5px solid #888;border-radius:10px;padding:10px 14px;margin:0 0 10px}
+#printArea h1{font-size:20px;margin:0 0 4px}#printArea h2{font-size:17px;margin:0 0 4px;color:#000}
+#printArea ol{margin:4px 0;padding-left:22px}#printArea table{width:auto;font-size:14px}#printArea td,#printArea th{border:1px solid #999;padding:3px 8px;white-space:normal;text-align:left;position:static;background:#fff}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">Smart Grade <small>ใช้งานได้แม้ไม่มีอินเทอร์เน็ต</small></div>
+    <div class="pick"><label for="roomSel">ห้อง</label><select id="roomSel"></select>
+      <label for="courseSel">วิชา</label><select id="courseSel"></select></div>
+  </div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+const SEED = {"meta": {"school": "", "teacher": ""}, "rooms": [{"name": "ม.1/1", "grade": "Grade 7/1", "students": []}, {"name": "ม.2/1", "grade": "Grade 8/1", "students": []}, {"name": "ม.2/2", "grade": "Grade 8/2", "students": []}, {"name": "ม.4/1", "grade": "Grade 10/1", "students": []}, {"name": "ม.5/1", "grade": "Grade 11/1", "students": []}, {"name": "ม.6/1", "grade": "Grade 12/1", "students": []}], "courses": [{"room": "ม.1/1", "subject": "โครงงานวิทยาศาสตร์ (PBL)", "sheet": "โครงงานวิทย์ Gr.7-9", "cols": [{"id": "c0", "name": "วิเคราะห์ปัญหา(K)", "max": 5, "kind": "in"}, {"id": "c1", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c2", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c3", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1", "c2"]}, {"id": "c4", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c5", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c6", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c3", "c4", "c5"]}, {"id": "c7", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c8", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c9", "name": "เชื่อมโยง Coding/Art", "max": 5, "kind": "in"}, {"id": "c10", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c7", "c8", "c9"]}, {"id": "c11", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c12", "name": "รวม", "max": 30, "kind": "sum", "src": ["c10", "c11"]}, {"id": "c13", "name": "รวม", "max": 80, "kind": "sum", "src": ["c6", "c12"]}, {"id": "c14", "name": "Final", "max": 20, "kind": "in"}, {"id": "c15", "name": "รวม", "max": 100, "kind": "sum", "src": ["c13", "c14"]}]}, {"room": "ม.2/1", "subject": "วิทยาศาสตร์", "sheet": "วิทย์ พฐ.Gr.7-9", "cols": [{"id": "c0", "name": "Test 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "แบบฝึกหัด/สอบย่อย(K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ (Lab) Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "แบบฝึกหัด/สอบย่อย(K)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Test 2 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test 3 Lab MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ (Lab) Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 60, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "คอมพิวเตอร์", "max": 20, "kind": "in"}, {"id": "c17", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c18", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16", "c17"]}]}, {"room": "ม.2/1", "subject": "โครงงานวิทยาศาสตร์ (PBL)", "sheet": "โครงงานวิทย์ Gr.7-9", "cols": [{"id": "c0", "name": "วิเคราะห์ปัญหา(K)", "max": 5, "kind": "in"}, {"id": "c1", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c2", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c3", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1", "c2"]}, {"id": "c4", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c5", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c6", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c3", "c4", "c5"]}, {"id": "c7", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c8", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c9", "name": "เชื่อมโยง Coding/Art", "max": 5, "kind": "in"}, {"id": "c10", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c7", "c8", "c9"]}, {"id": "c11", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c12", "name": "รวม", "max": 30, "kind": "sum", "src": ["c10", "c11"]}, {"id": "c13", "name": "รวม", "max": 80, "kind": "sum", "src": ["c6", "c12"]}, {"id": "c14", "name": "Final", "max": 20, "kind": "in"}, {"id": "c15", "name": "รวม", "max": 100, "kind": "sum", "src": ["c13", "c14"]}]}, {"room": "ม.2/2", "subject": "วิทยาศาสตร์", "sheet": "วิทย์ พฐ.Gr.7-9", "cols": [{"id": "c0", "name": "Test 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "แบบฝึกหัด/สอบย่อย(K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ (Lab) Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "แบบฝึกหัด/สอบย่อย(K)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Test 2 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test 3 Lab MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ (Lab) Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 60, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "คอมพิวเตอร์", "max": 20, "kind": "in"}, {"id": "c17", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c18", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16", "c17"]}]}, {"room": "ม.2/2", "subject": "โครงงานวิทยาศาสตร์ (PBL)", "sheet": "โครงงานวิทย์ Gr.7-9", "cols": [{"id": "c0", "name": "วิเคราะห์ปัญหา(K)", "max": 5, "kind": "in"}, {"id": "c1", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c2", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c3", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1", "c2"]}, {"id": "c4", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c5", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c6", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c3", "c4", "c5"]}, {"id": "c7", "name": "วางแผน/ออกแบบชิ้นงาน(S)", "max": 5, "kind": "in"}, {"id": "c8", "name": "การสื่อสาร/สังเกต/เชื่อมโยงข้อมูล(A/M)", "max": 5, "kind": "in"}, {"id": "c9", "name": "เชื่อมโยง Coding/Art", "max": 5, "kind": "in"}, {"id": "c10", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c7", "c8", "c9"]}, {"id": "c11", "name": "สอบปฏิบัติ/นำเสนอชิ้นงาน Skill", "max": 15, "kind": "in"}, {"id": "c12", "name": "รวม", "max": 30, "kind": "sum", "src": ["c10", "c11"]}, {"id": "c13", "name": "รวม", "max": 80, "kind": "sum", "src": ["c6", "c12"]}, {"id": "c14", "name": "Final", "max": 20, "kind": "in"}, {"id": "c15", "name": "รวม", "max": 100, "kind": "sum", "src": ["c13", "c14"]}]}, {"room": "ม.4/1", "subject": "เคมี", "sheet": "เคมี Gr.10-12", "cols": [{"id": "c0", "name": "Lab. 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "Lab. 2 /สอบย่อย/ชิ้นงาน (K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "Lab. 3 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Lab. 4 /สอบย่อย/ชิ้นงาน (K)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test Lab 5. MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 80, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c17", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16"]}]}, {"room": "ม.4/1", "subject": "โลก ดาราศาสตร์ และอวกาศ", "sheet": null, "cols": [{"id": "c0", "name": "Lab. 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "Lab. 2 /สอบย่อย/ชิ้นงาน (K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "Lab. 3 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Lab. 4 /สอบย่อย/ชิ้นงาน (K)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test Lab 5. MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 80, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c17", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16"]}]}, {"room": "ม.5/1", "subject": "เคมี", "sheet": "เคมี Gr.10-12", "cols": [{"id": "c0", "name": "Lab. 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "Lab. 2 /สอบย่อย/ชิ้นงาน (K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "Lab. 3 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Lab. 4 /สอบย่อย/ชิ้นงาน (K)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test Lab 5. MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 80, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c17", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16"]}]}, {"room": "ม.6/1", "subject": "เคมี", "sheet": "เคมี Gr.10-12", "cols": [{"id": "c0", "name": "Lab. 1 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c1", "name": "Lab. 2 /สอบย่อย/ชิ้นงาน (K)", "max": 10, "kind": "in"}, {"id": "c2", "name": "รวม", "max": 15, "kind": "sum", "src": ["c0", "c1"]}, {"id": "c3", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c4", "name": "Midterm Paper", "max": 20, "kind": "in"}, {"id": "c5", "name": "รวม Mid Term", "max": 50, "kind": "sum", "src": ["c2", "c3", "c4"]}, {"id": "c6", "name": "Lab. 3 การสื่อสาร สังเกต (A)", "max": 5, "kind": "in"}, {"id": "c7", "name": "Lab. 4 /สอบย่อย/ชิ้นงาน (K)", "max": 5, "kind": "in"}, {"id": "c8", "name": "Test Lab 5. MI รู้จักตนเอง", "max": 5, "kind": "in"}, {"id": "c9", "name": "รวมปฏิบัติ", "max": 15, "kind": "sum", "src": ["c6", "c7", "c8"]}, {"id": "c10", "name": "สอบปฏิบัติ Skill", "max": 15, "kind": "in"}, {"id": "c11", "name": "รวม", "max": 30, "kind": "sum", "src": ["c9", "c10"]}, {"id": "c12", "name": "รวม", "max": 80, "kind": "sum", "src": ["c5", "c11"]}, {"id": "c13", "name": "Final", "max": 20, "kind": "in"}, {"id": "c14", "name": "รวม", "max": 100, "kind": "sum", "src": ["c12", "c13"]}, {"id": "c15", "name": "คะแนนครูไทย", "max": 80, "kind": "scale", "src": ["c14"]}, {"id": "c16", "name": "ต่างชาติ", "max": 20, "kind": "in"}, {"id": "c17", "name": "รวม", "max": 100, "kind": "sum", "src": ["c15", "c16"]}]}]};
+const KEY = "smartgrade_v2";
+const TABS = [["dash","ภาพรวม"],["score","คะแนน"],["att","เช็กชื่อ"],["work","งาน/ส่งงาน"],["nb","ตรวจสมุด"],["stu","รายชื่อ"],["all","ทุกห้อง"],["set","ตั้งค่า"]];
+const CODES = [["ม","มา"],["ส","สาย"],["ล","ลา"],["ป","ป่วย"],["ข","ขาด"]];
+const WST = {ok:"ส่งแล้ว", late:"ส่งช้า", no:"ยังไม่ส่ง"};
+const LONGP = {"ด.ช.":"เด็กชาย","ด.ญ.":"เด็กหญิง","น.ส.":"นางสาว","นาย":"นาย","นาง":"นาง"};
+const GCOL = {"4":"#5B2D90","3.5":"#7E57C2","3":"#9575CD","2.5":"#42A5F5","2":"#26A69A","1.5":"#9CCC65","1":"#FFCA28","0":"#EF5350","มส":"#B71C1C","ร":"#BDBDBD"};
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const thDate = iso => { const [y,m,d] = iso.split("-"); return `${+d}/${+m}/${(+y + 543) % 100}`; };
+const fmt = (n, d = 1) => { if (n == null || isNaN(n)) return "-"; const t = Number(n).toFixed(d); return t.includes(".") ? t.replace(/\.?0+$/, "") : t; };
+const avg = a => { const v = a.filter(x => x != null && !isNaN(x)); return v.length ? v.reduce((p, q) => p + q, 0) / v.length : null; };
+
+const simpleCols = () => {
+  const ins = [["หน่วยที่ 1",10],["หน่วยที่ 2",10],["หน่วยที่ 3",10],["สอบกลางภาค",20],["หน่วยที่ 4",10],["หน่วยที่ 5",10],["สอบปลายภาค",30]].map(([n, m], i) => ({id: "c" + i, name: n, max: m, kind: "in"}));
+  return [...ins, {id: "c7", name: "รวม", max: 100, kind: "sum", src: ins.map(x => x.id)}];
+};
+function newCourse(roomId, subject, cols) { return { id: uid(), roomId, subject, cols: cols || simpleCols(), scores: {}, att: {}, works: [], sub: {} }; }
+function defaults() {
+  const S = { v: 2, settings: { school: "", teacher: "", term: "2/2569", thr: 80,
+      criteria: [[80,4],[75,3.5],[70,3],[65,2.5],[60,2],[55,1.5],[50,1],[0,0]] },
+    rooms: [], courses: [], cur: null, tab: "dash", attDate: today(), workSel: null, lastBackup: null };
+  if (SEED) {
+    Object.assign(S.settings, { school: SEED.meta.school || "", teacher: SEED.meta.teacher || "" });
+    const map = {};
+    for (const r of SEED.rooms) { const id = uid(); map[r.name] = id; S.rooms.push({ id, name: r.name, students: r.students.map(s => ({ id: uid(), ...s })) }); }
+    for (const c of SEED.courses) S.courses.push(newCourse(map[c.room], c.subject, c.cols));
+  } else {
+    const r = { id: uid(), name: "ห้อง 1", students: [] }; S.rooms.push(r); S.courses.push(newCourse(r.id, "วิชาใหม่"));
+  }
+  S.cur = S.courses[0].id;
+  return S;
+}
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || defaults(); } catch (e) { S = defaults(); }
+let storageOK = true;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); storageOK = true; } catch (e) { storageOK = false; toast("บันทึกในเครื่องไม่ได้ — กรุณาสำรองข้อมูลเป็นไฟล์"); } }
+function toast(t) { const e = document.getElementById("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 2400); }
+// กล่องยืนยัน/กรอกข้อความในหน้า (ใช้แทน confirm/prompt ที่บางเบราว์เซอร์หรือหน้าพรีวิวบล็อกไว้)
+function modal(msg, withInput, def, danger) {
+  return new Promise(res => {
+    const m = document.createElement("div"); m.className = "modal";
+    m.innerHTML = `<div class="box" role="dialog" aria-modal="true"><p>${esc(msg)}</p>${withInput ? `<input class="tx" id="mIn" value="${esc(def || "")}">` : ""}
+      <div class="row"><button class="btn s" data-m="0">ยกเลิก</button><button class="btn ${danger ? "d" : ""}" data-m="1">${danger ? "ยืนยัน" : "ตกลง"}</button></div></div>`;
+    const done = ok => { const v = withInput ? (ok ? m.querySelector("#mIn").value.trim() : null) : ok; m.remove(); document.removeEventListener("keydown", key, true); res(v); };
+    const key = e => { if (e.key === "Escape") { e.preventDefault(); done(false); } if (e.key === "Enter") { e.preventDefault(); done(true); } };
+    m.addEventListener("click", e => { if (e.target === m) return done(false); const b = e.target.closest("[data-m]"); if (b) done(b.dataset.m === "1"); });
+    document.addEventListener("keydown", key, true);
+    document.body.appendChild(m);
+    const f = m.querySelector("#mIn") || m.querySelector('[data-m="1"]'); f.focus(); if (withInput) f.select();
+  });
+}
+const ask = msg => modal(msg, false, "", true);
+const askText = (msg, def) => modal(msg, true, def);
+const C = () => S.courses.find(c => c.id === S.cur) || S.courses[0];
+const R = c => S.rooms.find(r => r.id === c.roomId);
+const fullName = s => `${s.prefix || ""}${s.first || ""} ${s.last || ""}`.trim();
+const sortedStu = c => [...(R(c)?.students || [])].sort((a, b) => (+a.no || 999) - (+b.no || 999));
+const roomCourses = rid => S.courses.filter(c => c.roomId === rid);
+
+// ---------- คะแนน ----------
+const colById = (c, id) => c.cols.find(x => x.id === id);
+function colMax(c, col) { return col.kind === "sum" ? col.src.reduce((a, id) => a + colMax(c, colById(c, id)), 0) : (+col.max || 0); }
+function colVal(c, sid, col) {
+  if (nbLinked(c, col)) { const a = nbStat(c, sid); return a.poss ? a.got / a.poss * (+col.max) : null; }
+  if (wLinked(c, col)) return wVal(c, sid, col);
+  if (col.kind === "in") { const v = (c.scores[sid] || {})[col.id]; return v === "" || v == null ? null : +v; }
+  if (col.kind === "scale") { const s = colById(c, col.src[0]), v = colVal(c, sid, s), m = colMax(c, s); return v == null || !m ? null : v * (+col.max) / m; }
+  let t = null; for (const id of col.src) { const v = colVal(c, sid, colById(c, id)); if (v != null) t = (t || 0) + v; } return t;
+}
+const NBK = [["s","ส่งสมุด"],["t","ตรงเวลา"],["c","งานครบ"],["n","เรียบร้อย"]];
+const NB = c => c.nb ||= { checks: [], marks: {}, link: null, max: 10 };
+function nbMax(c) { const nb = NB(c), l = c.cols.find(x => x.id === nb.link && x.kind === "in"); return l ? +l.max : +nb.max || 0; }
+function nbStat(c, sid) {
+  const nb = NB(c); let got = 0, sent = 0;
+  for (const k of nb.checks) { const m = (nb.marks[k.id] || {})[sid] || {}; got += NBK.filter(([x]) => m[x]).length; if (m.s) sent++; }
+  const poss = nb.checks.length * NBK.length;
+  return { got, poss, sent, n: nb.checks.length, pct: poss ? got / poss * 100 : null };
+}
+const nbLinked = (c, col) => col.kind === "in" && c.nb?.link === col.id;
+// คะแนนงาน: ช่องที่มีงานผูกไว้ = ค่าเฉลี่ยร้อยละของงานที่ผูก × คะแนนเต็มช่อง (งานที่ "ยังไม่ส่ง" และไม่มีคะแนน นับ 0)
+const wLinked = (c, col) => col.kind === "in" && !nbLinked(c, col) && (c.works || []).some(w => w.col === col.id);
+const wScore = (c, w, sid) => { const v = ((c.wsc || {})[w.id] || {})[sid]; return v === "" || v == null ? null : +v; };
+function wVal(c, sid, col) {
+  let t = 0, n = 0;
+  for (const w of c.works) if (w.col === col.id) {
+    const v = wScore(c, w, sid);
+    if (v != null) { t += v / (+w.max || 1); n++; } else if ((c.sub[w.id] || {})[sid] === "no") n++;
+  }
+  return n ? t / n * (+col.max) : null;
+}
+const totalCol = c => c.cols[c.cols.length - 1];
+function scoreStat(c, sid) {
+  const tc = totalCol(c), sum = colVal(c, sid, tc), max = colMax(c, tc);
+  const ins = c.cols.filter(x => x.kind === "in");
+  const filled = ins.filter(x => colVal(c, sid, x) != null).length;
+  return { sum, max, pct: sum == null ? null : sum / (max || 1) * 100, complete: filled === ins.length && filled > 0, filled, nin: ins.length };
+}
+function attStat(c, sid) {
+  const n = {ม:0,ส:0,ล:0,ป:0,ข:0};
+  for (const d in c.att) { const v = c.att[d][sid]; if (v) n[v]++; }
+  const tot = n.ม + n.ส + n.ล + n.ป + n.ข;
+  return { ...n, tot, pct: tot ? (n.ม + n.ส) / tot * 100 : null };
+}
+function gradeOf(c, sid) {
+  const sc = scoreStat(c, sid); if (sc.pct == null) return "";
+  const a = attStat(c, sid);
+  if (a.pct != null && a.pct < S.settings.thr) return "มส";
+  if (!sc.complete) return "ร";
+  const p = Math.round(sc.pct * 100) / 100;
+  for (const [min, g] of [...S.settings.criteria].sort((x, y) => y[0] - x[0])) if (p >= min) return String(g);
+  return "0";
+}
+function workStat(c, sid) {
+  const n = {ok:0, late:0, no:0};
+  for (const w of c.works) { const v = (c.sub[w.id] || {})[sid]; if (v) n[v]++; }
+  const t = n.ok + n.late + n.no;
+  return { ...n, pct: t ? (n.ok + n.late) / t * 100 : null };
+}
+function gradePill(g) {
+  if (!g) return "";
+  const bad = g === "มส" || g === "0", good = +g >= 3.5;
+  const bg = bad ? "var(--rl)" : g === "ร" ? "#eee" : good ? "var(--gl)" : "var(--pl)";
+  const fg = bad ? "var(--r)" : g === "ร" ? "#666" : good ? "var(--g)" : "var(--p)";
+  return `<span class="pill" style="background:${bg};color:${fg}">${g}</span>`;
+}
+
+// ---------- แผนงานที่มอบหมาย (1 งานต่อ 1 ช่องคะแนน) ----------
+// W(ช่อง, ชื่องาน, หัวข้อ/เนื้อหา, รูปแบบ, ทำแบบ, กำหนด, [ขั้นตอน], [[เกณฑ์, คะแนน]])
+const W = (col, n, t, f, w, d, h, r) => ({ col, n, t, f, w, d, h, r });
+const MI_FMT = "เลือก 1 แบบที่ถนัด: วาดภาพ/โปสเตอร์ · แต่งเพลงหรือแร็ป · คลิปหรือละครสั้น 1 นาที · เรียงความ/จดหมาย/นิทาน · ประดิษฐ์แบบจำลอง · เกม/ปริศนาอักษรไขว้";
+const MI_RUB = [["เนื้อหาถูกต้อง", 2], ["สร้างสรรค์ ใช้จุดเด่นของตนเอง", 2], ["นำเสนอ/ส่งตรงเวลา", 1]];
+const BOOK8 = "พับกระดาษ A4 เป็นสมุดเล่มเล็ก 8 หน้า (ครูสาธิตวิธีพับ)";
+const WPLAN = {
+  sci2: [
+    W("c0", "การ์ตูน 4 ช่อง: เครื่องกลอย่างง่ายรอบตัวฉัน", "หน่วยที่ 5 เครื่องกลอย่างง่าย (คาน รอก พื้นเอียง ลิ่ม สกรู ล้อและเพลา)", "การ์ตูน 4 ช่อง กระดาษ A4 หรือในสมุด", "เดี่ยว", "สั่งคาบที่ 4 · ส่งคาบที่ 6",
+      ["สำรวจบ้านหรือโรงเรียน หาเครื่องกลอย่างง่าย 4 ชนิด เช่น กรรไกร ทางลาด ไขควง ลูกบิดประตู", "วาดหรือติดภาพช่องละ 1 ชนิด", "ใต้ภาพเขียน 1–2 บรรทัด: เป็นเครื่องกลชนิดใด ช่วยทุ่นแรงอย่างไร", "ระบายสี เขียนชื่อ-เลขที่"],
+      [["ระบุชนิดเครื่องกลถูกต้อง", 2], ["อธิบายการทุ่นแรงได้", 2], ["เรียบร้อย ส่งตรงเวลา", 1]]),
+    W("c1", "มายแมพ: หน่วยที่ 5 งานและพลังงาน", "งาน กำลัง เครื่องกลอย่างง่าย พลังงานศักย์โน้มถ่วง พลังงานจลน์ กฎการอนุรักษ์พลังงาน", "มายแมพ กระดาษ A4 แนวนอน", "เดี่ยว", "สั่งคาบที่ 7 · ส่งคาบที่ 9",
+      ["เขียน \"งานและพลังงาน\" ไว้กลางหน้า", "แตก 6 กิ่ง: งาน · กำลัง · เครื่องกลอย่างง่าย · พลังงานศักย์โน้มถ่วง · พลังงานจลน์ · กฎการอนุรักษ์พลังงาน", "แต่ละกิ่งใส่ความหมาย สูตร หน่วย และตัวอย่าง 1 อย่าง", "ใช้สีและภาพเล็ก ๆ ช่วยจำ"],
+      [["เนื้อหาครบ 6 หัวข้อ", 4], ["สูตรและหน่วยถูกต้อง", 3], ["ใช้สี/ภาพ อ่านง่าย", 2], ["ส่งตรงเวลา", 1]]),
+    W("c3", "ชิ้นงาน STEM: เครื่องกรองน้ำอย่างง่าย", "หน่วยที่ 6 การแยกสาร (การกรอง การตกตะกอน การดูดซับ)", "ชิ้นงานจากขวดพลาสติก + แบบบันทึกการออกแบบ", "กลุ่ม 3–4 คน", "สั่งคาบที่ 13 · นำเสนอคาบที่ 14",
+      ["วาดแบบร่างเครื่องกรอง บอกวัสดุแต่ละชั้น (กรวด ทราย ถ่าน สำลี)", "สร้างจากขวดพลาสติกตัดครึ่ง", "ทดลองกรองน้ำขุ่น ถ่ายภาพน้ำก่อน-หลังกรอง", "นำเสนอกลุ่มละ 3 นาที: ใช้วิธีแยกสารแบบใด และจะปรับปรุงอย่างไร"],
+      [["แบบร่างชัดเจน บอกวัสดุ", 3], ["ชิ้นงานใช้ได้จริง น้ำใสขึ้น", 4], ["อธิบายหลักการแยกสารถูกต้อง", 4], ["นำเสนอชัดเจน ตอบคำถามได้", 2], ["ทำงานร่วมกัน ปลอดภัย", 2]]),
+    W("c6", "สมุดเล่มเล็ก: โลกและดินของเรา", "หน่วยที่ 7 โครงสร้างโลก การผุพัง การกร่อน การสะสมตัวของตะกอน ดิน", "สมุดเล่มเล็ก 8 หน้า", "เดี่ยว", "สั่งคาบที่ 19 · ส่งคาบที่ 22",
+      [BOOK8, "หน้า 1 ปก · 2 โครงสร้างภายในโลก · 3 การผุพังอยู่กับที่ · 4 การกร่อน · 5 การสะสมตัวของตะกอน · 6 ดินเกิดอย่างไร · 7 ชั้นหน้าตัดดิน · 8 คำถามชวนคิด 3 ข้อ", "แต่ละหน้าเขียนสั้น ๆ 2–3 บรรทัด และมีภาพวาดประกอบ"],
+      [["เนื้อหาถูกต้อง ครบ 8 หน้า", 2], ["มีภาพประกอบ", 1], ["สวยงาม เรียบร้อย", 1], ["ส่งตรงเวลา", 1]]),
+    W("c7", "อินโฟกราฟิก: ภัยธรรมชาติใกล้ตัว", "หน่วยที่ 7 น้ำท่วม แผ่นดินถล่ม การกัดเซาะชายฝั่ง หลุมยุบ แผ่นดินทรุด", "โปสเตอร์/อินโฟกราฟิก A4 + พูดหน้าห้อง 1 นาที", "เดี่ยว", "สั่งคาบที่ 23 · นำเสนอคาบที่ 25",
+      ["เลือก 1 ภัย: น้ำท่วม แผ่นดินถล่ม การกัดเซาะชายฝั่ง หลุมยุบ หรือแผ่นดินทรุด", "ทำอินโฟกราฟิก 3 หัวข้อ: สาเหตุ · สัญญาณเตือน · วิธีป้องกันและเอาตัวรอด", "นำเสนอหน้าห้องคนละ 1 นาที"],
+      [["ข้อมูลถูกต้อง ครบ 3 หัวข้อ", 2], ["สื่อสารชัดเจน น่าอ่าน", 2], ["นำเสนอได้ ตรงเวลา", 1]]),
+    W("c8", "MI รู้จักตนเอง: พลังงานแห่งอนาคต", "หน่วยที่ 8 เชื้อเพลิงซากดึกดำบรรพ์ พลังงานทดแทน การใช้พลังงานในอนาคต", MI_FMT, "เดี่ยว", "สั่งคาบที่ 26 · ส่งคาบที่ 28",
+      ["หัวข้อ: \"การใช้พลังงานในอนาคตควรเป็นอย่างไร\"", "เลือกทำ 1 แบบที่ตัวเองถนัด (ดูรูปแบบด้านบน)", "ต้องมีพลังงานทดแทนอย่างน้อย 1 ชนิด และวิธีประหยัดพลังงาน 1 วิธี", "เขียนท้ายงาน 1 บรรทัด: เลือกแบบนี้เพราะถนัดด้านใด"],
+      MI_RUB),
+    W("c10", "สอบปฏิบัติ: ตรวจวัดสมบัติของดิน", "หน่วยที่ 7 ดินและการตรวจวัดสมบัติของดิน", "ปฏิบัติการ + ตารางบันทึกผล", "กลุ่ม 3–4 คน", "สอบคาบที่ 21",
+      ["นำดินจากบ้านหรือโรงเรียนมา 1 ตัวอย่าง", "ตรวจเนื้อดิน (ปั้นดิน) ความชื้น และ pH ด้วยกระดาษยูนิเวอร์ซัลอินดิเคเตอร์", "บันทึกผลลงตาราง ถ่ายภาพ", "สรุปว่าดินนี้เหมาะปลูกพืชอะไร เพราะอะไร"],
+      [["ใช้อุปกรณ์ถูกวิธี", 4], ["บันทึกผลครบ ถูกต้อง", 4], ["แปลผลและสรุปได้", 4], ["ปลอดภัย เก็บอุปกรณ์", 3]]),
+  ],
+  chem4: [
+    W("c0", "การ์ตูน 4 ช่อง: 'โมล' อธิบายให้น้องเข้าใจ", "บทที่ 4 โมล เลขอาโวกาโดร มวลโมเลกุล", "การ์ตูน 4 ช่อง กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 6 · ส่งคาบที่ 8",
+      ["แต่งการ์ตูน 4 ช่อง อธิบายว่า 1 โมลคืออะไร (6.02 × 10²³ อนุภาค)", "เปรียบเทียบกับหน่วยนับในชีวิตประจำวัน เช่น 1 โหล = 12 ชิ้น", "มีตัวอย่างเปลี่ยนโมล ↔ มวล 1 ตัวอย่าง"],
+      [["ความหมายของโมลถูกต้อง", 2], ["สื่อสารเข้าใจง่าย มีตัวอย่าง", 2], ["เรียบร้อย ส่งตรงเวลา", 1]]),
+    W("c1", "มายแมพ: บทที่ 4 โมลและสูตรเคมี", "โมลกับจำนวนอนุภาค มวล ปริมาตรแก๊สที่ STP ร้อยละโดยมวล สูตรอย่างง่าย สูตรโมเลกุล", "มายแมพ กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 14 · ส่งคาบที่ 16",
+      ["กลางหน้าเขียน \"โมล\"", "แตกกิ่ง: จำนวนอนุภาค · มวล · ปริมาตรแก๊สที่ STP · ร้อยละโดยมวล · สูตรอย่างง่าย/สูตรโมเลกุล", "แต่ละกิ่งใส่สูตรพร้อมหน่วย", "ท้ายหน้าทำโจทย์ตัวอย่าง 1 ข้อ แสดงวิธีทำ"],
+      [["ครบทุกหัวข้อ", 4], ["สูตร/หน่วยถูกต้อง", 3], ["โจทย์ตัวอย่างถูกต้อง", 2], ["ส่งตรงเวลา", 1]]),
+    W("c3", "สอบปฏิบัติ: การเตรียมสารละลาย", "บทที่ 5 ความเข้มข้นและการเตรียมสารละลาย (กิจกรรม 5.1)", "ปฏิบัติการรายบุคคล/รายคู่", "เดี่ยว หรือคู่", "สอบคาบที่ 21",
+      ["รับโจทย์จากครู เช่น เตรียมสารละลาย NaCl 0.10 mol/L ปริมาตร 100 mL", "คำนวณมวลสารที่ต้องใช้", "ชั่งสาร ละลาย และปรับปริมาตรในขวดวัดปริมาตรให้ตรงขีด", "ติดฉลาก: ชื่อสาร ความเข้มข้น วันที่ ชื่อผู้เตรียม"],
+      [["คำนวณมวลถูกต้อง", 3], ["ใช้เครื่องชั่งถูกวิธี", 3], ["ใช้ขวดวัดปริมาตร/ปรับขีดถูกวิธี", 4], ["ติดฉลากครบ", 2], ["ปลอดภัย สะอาด เก็บอุปกรณ์", 3]]),
+    W("c6", "อินโฟกราฟิก: ปฏิกิริยาเคมีรอบตัวฉัน", "บทที่ 6 ปฏิกิริยาเคมีและการดุลสมการ", "อินโฟกราฟิก A4", "เดี่ยว", "สั่งคาบที่ 29 · ส่งคาบที่ 31",
+      ["หาปฏิกิริยาเคมีในชีวิตประจำวัน 3 อย่าง เช่น การเผาไหม้แก๊สหุงต้ม เหล็กเป็นสนิม ผงฟูกับน้ำส้มสายชู", "บอกสิ่งที่สังเกตได้ (ฟองแก๊ส สี ความร้อน ตะกอน)", "เขียนสมการเคมีที่ดุลแล้ว"],
+      [["สังเกต/อธิบายการเปลี่ยนแปลงได้", 2], ["สมการดุลถูกต้อง", 2], ["น่าอ่าน ส่งตรงเวลา", 1]]),
+    W("c7", "สมุดเล่มเล็ก: ปริมาณสารสัมพันธ์", "บทที่ 6 การคำนวณปริมาณสารในปฏิกิริยาเคมี สารกำหนดปริมาณ ผลได้ร้อยละ", "สมุดเล่มเล็ก 8 หน้า", "เดี่ยว", "สั่งคาบที่ 38 · ส่งคาบที่ 41",
+      [BOOK8, "หน้า 1 ปก · 2 การดุลสมการ · 3 โมล–มวล · 4 โมล–ความเข้มข้น · 5 โมล–ปริมาตรแก๊ส · 6 สารกำหนดปริมาณ · 7 ผลได้ร้อยละ · 8 โจทย์ทบทวน 2 ข้อพร้อมเฉลย", "แต่ละหน้ามีสูตร 1 สูตร + ตัวอย่างสั้น ๆ"],
+      [["เนื้อหาถูกต้อง ครบ", 2], ["ตัวอย่าง/โจทย์ถูกต้อง", 1], ["สวยงาม เรียบร้อย", 1], ["ส่งตรงเวลา", 1]]),
+    W("c8", "MI รู้จักตนเอง: สารละลายในชีวิตประจำวัน", "บทที่ 5 การเจือจาง สมบัติของสารละลาย จุดเดือด จุดเยือกแข็ง", MI_FMT, "เดี่ยว", "สั่งคาบที่ 24 · ส่งคาบที่ 27",
+      ["หัวข้อ: สารละลายรอบตัว (น้ำเกลือ น้ำเชื่อม น้ำยาล้างจาน ฯลฯ) หรือ \"ทำไมน้ำเกลือเดือดช้ากว่าน้ำเปล่า\"", "เลือกทำ 1 แบบที่ตัวเองถนัด (ดูรูปแบบด้านบน)", "ต้องมีหลักเคมีอย่างน้อย 1 อย่าง เช่น ความเข้มข้น การเจือจาง จุดเดือดสูงขึ้น", "เขียนท้ายงาน 1 บรรทัด: เลือกแบบนี้เพราะถนัดด้านใด"],
+      MI_RUB),
+    W("c10", "สอบปฏิบัติ: ผลได้ร้อยละ (กิจกรรม 6.3)", "บทที่ 6 ผลได้ตามทฤษฎีและผลได้ร้อยละ", "ปฏิบัติการ + ใบบันทึกผล", "กลุ่ม 3 คน", "สอบคาบที่ 41",
+      ["ทำการทดลอง Na₂CO₃ + CaCl₂ ตามใบกิจกรรม 6.3", "กรอง อบแห้ง และชั่งตะกอน CaCO₃", "คำนวณผลได้ตามทฤษฎีและผลได้ร้อยละ", "อธิบายสาเหตุที่ผลได้ไม่ถึง 100%"],
+      [["ทดลองถูกขั้นตอน", 4], ["บันทึกข้อมูลถูกต้อง", 3], ["คำนวณผลได้ร้อยละถูกต้อง", 4], ["อภิปรายสาเหตุได้", 2], ["ความปลอดภัย", 2]]),
+  ],
+  chem5: [
+    W("c0", "สำรวจกรด-เบสในบ้านด้วยน้ำกะหล่ำปลีม่วง", "บทที่ 10 กรด-เบส และอินดิเคเตอร์", "ตารางบันทึกผล + ภาพถ่าย กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 8 · ส่งคาบที่ 10",
+      ["คั้นน้ำกะหล่ำปลีม่วงใช้เป็นอินดิเคเตอร์ธรรมชาติ", "ทดสอบของในบ้าน 5 อย่าง เช่น น้ำมะนาว น้ำส้มสายชู น้ำสบู่ ผงฟู น้ำเปล่า", "ถ่ายภาพสีที่ได้ ทำตารางบันทึก แล้วจัดกลุ่ม กรด / กลาง / เบส"],
+      [["ทดสอบครบ 5 อย่าง มีภาพ", 2], ["จัดกลุ่มถูกต้อง", 2], ["ส่งตรงเวลา", 1]]),
+    W("c1", "มายแมพ: กรด-เบส", "ทฤษฎีกรด-เบส กรดแก่/อ่อน Ka Kb Kw pH pOH เกลือ ปฏิกิริยาสะเทิน อินดิเคเตอร์", "มายแมพ กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 10 · ส่งคาบที่ 12",
+      ["กลางหน้าเขียน \"กรด-เบส\"", "แตกกิ่ง: ทฤษฎี 3 แบบ · กรดแก่/กรดอ่อน · Ka Kb Kw · pH และ pOH · สมบัติของเกลือ · ปฏิกิริยาสะเทิน · อินดิเคเตอร์", "ใส่สูตรสำคัญ เช่น pH = −log[H₃O⁺], pH + pOH = 14", "ใช้สีแยก กรด (แดง) / เบส (น้ำเงิน)"],
+      [["ครบทุกหัวข้อ", 4], ["สูตร/ข้อมูลถูกต้อง", 3], ["ใช้สี/ภาพ อ่านง่าย", 2], ["ส่งตรงเวลา", 1]]),
+    W("c3", "สอบปฏิบัติ: การไทเทรตกรด-เบส", "บทที่ 10 การไทเทรต (กิจกรรม 10.3–10.4)", "ปฏิบัติการ + ใบบันทึกผล", "คู่", "สอบคาบที่ 13",
+      ["ล้างและเตรียมบิวเรตต์ ปิเปตต์ ตามขั้นตอน", "ไทเทรต HCl ด้วย NaOH มาตรฐาน ใช้ฟีนอล์ฟทาลีน", "อ่านปริมาตรที่จุดยุติ ทำซ้ำ 2 ครั้ง", "คำนวณความเข้มข้นของกรด"],
+      [["เตรียมเครื่องมือถูกวิธี", 3], ["ไทเทรตและสังเกตจุดยุติได้", 4], ["อ่านปริมาตร/บันทึกถูกต้อง", 3], ["คำนวณความเข้มข้นถูกต้อง", 3], ["ความปลอดภัย", 2]]),
+    W("c6", "อินโฟกราฟิก: แบตเตอรี่รอบตัวฉัน", "บทที่ 11 เซลล์ปฐมภูมิและเซลล์ทุติยภูมิ", "อินโฟกราฟิก A4", "เดี่ยว", "สั่งคาบที่ 25 · ส่งคาบที่ 27",
+      ["สำรวจแบตเตอรี่ในบ้าน 3 ชนิด เช่น ถ่านไฟฉาย แบตมือถือ แบตรถยนต์", "บอกว่าเป็นเซลล์ปฐมภูมิหรือทุติยภูมิ", "บอกวิธีใช้และทิ้งอย่างปลอดภัย"],
+      [["จำแนกชนิดเซลล์ถูกต้อง", 2], ["ข้อมูลการใช้/การทิ้งถูกต้อง", 2], ["น่าอ่าน ส่งตรงเวลา", 1]]),
+    W("c7", "สมุดเล่มเล็ก: ไฟฟ้าเคมี", "บทที่ 11 เลขออกซิเดชัน รีดอกซ์ เซลล์กัลวานิก เซลล์อิเล็กโทรไลต์ การชุบโลหะ", "สมุดเล่มเล็ก 8 หน้า", "เดี่ยว", "สั่งคาบที่ 23 · ส่งคาบที่ 26",
+      [BOOK8, "หน้า 1 ปก · 2 เลขออกซิเดชัน · 3 ปฏิกิริยารีดอกซ์ · 4 การดุลสมการรีดอกซ์ · 5 เซลล์กัลวานิกและแผนภาพเซลล์ · 6 ศักย์ไฟฟ้ามาตรฐาน · 7 เซลล์อิเล็กโทรไลต์ · 8 การชุบโลหะ", "แต่ละหน้ามีภาพหรือตัวอย่างสั้น ๆ"],
+      [["เนื้อหาถูกต้อง ครบ", 2], ["มีภาพ/ตัวอย่างประกอบ", 1], ["สวยงาม เรียบร้อย", 1], ["ส่งตรงเวลา", 1]]),
+    W("c8", "MI รู้จักตนเอง: รีดอกซ์ในชีวิตประจำวัน", "บทที่ 11 ปฏิกิริยารีดอกซ์ เช่น เหล็กเป็นสนิม ผลไม้หั่นแล้วเป็นสีน้ำตาล การชุบโลหะ", MI_FMT, "เดี่ยว", "สั่งคาบที่ 20 · ส่งคาบที่ 22",
+      ["หัวข้อ: ปฏิกิริยารีดอกซ์ที่พบในชีวิตประจำวัน 1 เรื่อง", "เลือกทำ 1 แบบที่ตัวเองถนัด (ดูรูปแบบด้านบน)", "ต้องบอกได้ว่าสารใดให้อิเล็กตรอน สารใดรับอิเล็กตรอน", "เขียนท้ายงาน 1 บรรทัด: เลือกแบบนี้เพราะถนัดด้านใด"],
+      MI_RUB),
+    W("c10", "ชิ้นงาน: เซลล์ไฟฟ้าจากผลไม้", "บทที่ 11 เซลล์กัลวานิก แอโนด แคโทด", "ชิ้นงาน + นำเสนอ", "กลุ่ม 3–4 คน", "สั่งคาบที่ 25 · นำเสนอคาบที่ 28",
+      ["ใช้มะนาว/ส้ม + แผ่นสังกะสี (Zn) + แผ่นทองแดง (Cu) ต่อเป็นเซลล์", "วัดความต่างศักย์ด้วยมัลติมิเตอร์ ลองต่ออนุกรม 2–4 ลูก", "ทำให้หลอด LED ติด", "นำเสนอ: ขั้วใดเป็นแอโนด/แคโทด เขียนครึ่งปฏิกิริยา"],
+      [["ต่อวงจรถูกต้อง LED ติด", 4], ["วัดและบันทึกค่าศักย์ไฟฟ้า", 3], ["ระบุแอโนด/แคโทด เขียนครึ่งปฏิกิริยาถูก", 4], ["นำเสนอชัดเจน", 2], ["ทำงานร่วมกัน ปลอดภัย", 2]]),
+  ],
+  chem6: [
+    W("c0", "การ์ตูน 4 ช่อง: ฝนหลวง เคมีแก้ภัยแล้ง", "บทนำ เคมีกับการแก้ปัญหา และการทำฝนหลวง", "การ์ตูน 4 ช่อง กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 1 · ส่งคาบที่ 3",
+      ["อ่านหรือดูคลิปเรื่องการทำฝนหลวง", "วาดการ์ตูน 4 ช่อง: ปัญหาภัยแล้ง → ก่อกวน → เลี้ยงให้อ้วน → โจมตี", "บอกสารเคมีที่ใช้อย่างน้อย 1 ชนิด และหน้าที่ของสารนั้น"],
+      [["ลำดับขั้นตอนถูกต้อง", 2], ["ระบุสารเคมีและหน้าที่ได้", 2], ["เรียบร้อย ส่งตรงเวลา", 1]]),
+    W("c1", "มายแมพ: วิธีการทางวิทยาศาสตร์ กับ กระบวนการออกแบบเชิงวิศวกรรม", "กิจกรรม 14.1–14.2 และการเปรียบเทียบ 2 กระบวนการ", "มายแมพ/แผนผังเปรียบเทียบ A4", "เดี่ยว", "สั่งคาบที่ 10 · ส่งคาบที่ 12",
+      ["แบ่งหน้าเป็น 2 ฝั่ง", "ซ้าย: ขั้นตอนวิธีการทางวิทยาศาสตร์ · ขวา: ขั้นตอนกระบวนการออกแบบเชิงวิศวกรรม", "แต่ละขั้นยกตัวอย่างจากกิจกรรม 14.1 และ 14.2 (สายไฟแป้งโดว์)", "ตรงกลางเขียนความเหมือน/ความต่าง 3 ข้อ"],
+      [["ขั้นตอนครบถูกต้องทั้ง 2 แบบ", 4], ["ยกตัวอย่างจากกิจกรรมได้", 3], ["เปรียบเทียบเหมือน/ต่างได้", 2], ["ส่งตรงเวลา", 1]]),
+    W("c3", "ชิ้นงาน: สายไฟแป้งโดว์ (กิจกรรม 14.2)", "กระบวนการออกแบบเชิงวิศวกรรม สารที่นำไฟฟ้าและไม่นำไฟฟ้า", "ชิ้นงาน + นำเสนอ", "กลุ่ม 3–4 คน", "สั่งคาบที่ 7 · นำเสนอคาบที่ 9",
+      ["ทำแป้งโดว์นำไฟฟ้า (ผสมเกลือ) และแป้งโดว์ไม่นำไฟฟ้า (ผสมน้ำตาล)", "ปั้นเป็นรูปทรง/วงจรที่ทำให้หลอด LED ติด", "ทดสอบ ปรับปรุง และบันทึกผล", "นำเสนอ: ทำไมแป้งผสมเกลือจึงนำไฟฟ้า"],
+      [["ชิ้นงานใช้ได้ LED ติด", 4], ["ออกแบบ/ปรับปรุงตามขั้นตอน", 3], ["อธิบายหลักเคมีถูกต้อง", 4], ["นำเสนอชัดเจน", 2], ["ทำงานร่วมกัน", 2]]),
+    W("c6", "สมุดบันทึกการทำงานโครงงาน (Logbook)", "กิจกรรม 14.3 การแก้ปัญหาในโรงเรียนและท้องถิ่น", "บันทึกในสมุด/แฟ้ม", "กลุ่ม (ทุกคนลงชื่อ)", "เริ่มคาบที่ 16 · ส่งคาบที่ 21",
+      ["บันทึกทุกคาบที่ทำโครงงาน: วันที่ สิ่งที่ทำ ผลที่ได้ ปัญหาและวิธีแก้", "ติดภาพถ่ายการทำงานอย่างน้อย 3 ภาพ", "สมาชิกลงชื่อทุกหน้า"],
+      [["บันทึกครบทุกครั้ง", 2], ["ข้อมูล/ภาพหลักฐานชัดเจน", 2], ["เรียบร้อย ส่งตรงเวลา", 1]]),
+    W("c7", "ใบสรุปการเข้าร่วมประชุมวิชาการ (กิจกรรม 14.7–14.8)", "การประชุมวิชาการและการนำเสนอผลงานทางวิทยาศาสตร์", "ใบสรุป 1 หน้า", "เดี่ยว", "สั่งคาบที่ 27 · ส่งคาบที่ 28",
+      ["ชมการนำเสนอผลงาน (งานประชุมวิชาการ หรือคลิปที่ครูให้) 1 เรื่อง", "สรุปลงใบ: ชื่อเรื่อง · ผู้นำเสนอ · ปัญหา · วิธีการ · ผลที่ได้", "เขียนสิ่งที่ได้เรียนรู้ 2 ข้อ และคำถามที่อยากถามผู้นำเสนอ 1 ข้อ"],
+      [["สรุปครบทุกหัวข้อ", 2], ["ข้อมูลถูกต้อง ตรงประเด็น", 2], ["ส่งตรงเวลา", 1]]),
+    W("c8", "MI รู้จักตนเอง: สิ่งที่ฉันได้เรียนรู้จากโครงงาน", "สะท้อนการเรียนรู้จากกิจกรรม 14.3", MI_FMT, "เดี่ยว", "สั่งคาบที่ 22 · ส่งคาบที่ 24",
+      ["หัวข้อ: \"เคมีช่วยแก้ปัญหาของเราได้อย่างไร\" จากโครงงานของกลุ่ม", "เลือกทำ 1 แบบที่ตัวเองถนัด (ดูรูปแบบด้านบน)", "บอกหน้าที่ของตัวเองในกลุ่ม และสิ่งที่จะทำให้ดีขึ้นครั้งหน้า 1 ข้อ", "เขียนท้ายงาน 1 บรรทัด: เลือกแบบนี้เพราะถนัดด้านใด"],
+      MI_RUB),
+    W("c10", "โปสเตอร์และการนำเสนอผลงาน (กิจกรรม 14.5–14.6)", "การนำเสนอผลงานจากกิจกรรม 14.3", "โปสเตอร์ + นำเสนอ 5 นาที", "กลุ่ม", "สั่งคาบที่ 23 · นำเสนอคาบที่ 25–26",
+      ["ทำโปสเตอร์ผลงาน: ชื่อเรื่อง ที่มา วิธีการ ผล สรุป ภาพประกอบ", "ปรับปรุงตามคำแนะนำของครูและเพื่อน", "นำเสนอกลุ่มละ 5 นาที ตอบคำถาม 2 นาที"],
+      [["โปสเตอร์ครบองค์ประกอบ", 4], ["ข้อมูลถูกต้อง มีหลักฐาน", 3], ["ออกแบบสวย อ่านง่าย", 2], ["นำเสนอชัดเจน ตรงเวลา", 4], ["ตอบคำถามได้", 2]]),
+  ],
+  earth4: [
+    W("c0", "ภาพถ่าย: หินและแร่ในบ้านฉัน", "บทที่ 5 ทรัพยากรธรณีในชีวิตประจำวัน (กิจกรรม 5.1)", "ภาพถ่าย/ภาพวาด ติดกระดาษ A4", "เดี่ยว", "สั่งคาบที่ 1 · ส่งคาบที่ 3",
+      ["ถ่ายภาพหรือวาดของใช้ 5 อย่างที่ทำจากหินหรือแร่ เช่น ไส้ดินสอ (แกรไฟต์) แก้ว (ควอตซ์) ปูนซีเมนต์ (หินปูน)", "ติดลงกระดาษ A4 เขียนชื่อหิน/แร่ที่เป็นวัตถุดิบ", "สรุป 1 บรรทัด: ถ้าไม่มีทรัพยากรธรณี ชีวิตเราจะเป็นอย่างไร"],
+      [["ครบ 5 อย่าง มีภาพ", 2], ["ระบุหิน/แร่ถูกต้อง", 2], ["ส่งตรงเวลา", 1]]),
+    W("c1", "มายแมพ: แร่", "บทที่ 5 ความหมาย สมบัติทางกายภาพ การระบุชนิดแร่ และประโยชน์ของแร่", "มายแมพ กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 5 · ส่งคาบที่ 7",
+      ["กลางหน้าเขียน \"แร่\"", "แตกกิ่ง: ความหมาย · สมบัติทางกายภาพ (สี สีผง ความวาว ความแข็ง แนวแตก ความถ่วงจำเพาะ รูปผลึก) · การระบุชนิดแร่ · แร่สำคัญและประโยชน์", "ใส่สเกลความแข็งของโมส์ 1–10 แบบย่อ", "ใช้สีและภาพช่วยจำ"],
+      [["ครบทุกหัวข้อ", 4], ["ข้อมูลถูกต้อง", 3], ["ใช้สี/ภาพ อ่านง่าย", 2], ["ส่งตรงเวลา", 1]]),
+    W("c3", "สอบปฏิบัติ: ระบุชนิดแร่และหิน", "บทที่ 5 สมบัติของแร่ หินอัคนี หินตะกอน หินแปร", "เวียนฐานปฏิบัติ + ตารางบันทึกผล", "เดี่ยว", "สอบคาบที่ 13",
+      ["เวียนฐาน 5 ฐาน ฐานละ 1 ตัวอย่าง", "ทดสอบสีผง ความแข็ง ความวาว และสังเกตเนื้อหิน", "บันทึกผลลงตาราง แล้วใช้แผนผังระบุชนิด", "บอกว่าเป็นแร่ชนิดใด หรือเป็นหินอัคนี/ตะกอน/แปร"],
+      [["ทดสอบสมบัติถูกวิธี", 4], ["บันทึกผลครบ ถูกต้อง", 4], ["ระบุชนิดแร่/หินถูกต้อง", 5], ["ปลอดภัย เก็บอุปกรณ์", 2]]),
+    W("c6", "อินโฟกราฟิก: ปิโตรเลียมจากใต้ดินสู่ชีวิตเรา", "บทที่ 5 การเกิด การสำรวจ และการใช้ประโยชน์ปิโตรเลียม", "อินโฟกราฟิก A4", "เดี่ยว", "สั่งคาบที่ 16 · ส่งคาบที่ 18",
+      ["วาดขั้นตอน: เกิด → สำรวจ → ขุดเจาะ → กลั่น → ผลิตภัณฑ์", "ยกตัวอย่างผลิตภัณฑ์จากปิโตรเลียม 5 อย่างในบ้าน", "บอกผลกระทบต่อสิ่งแวดล้อม 1 ข้อ และวิธีช่วยลดผลกระทบ"],
+      [["ลำดับขั้นตอนถูกต้อง", 2], ["ตัวอย่าง/ผลกระทบถูกต้อง", 2], ["น่าอ่าน ส่งตรงเวลา", 1]]),
+    W("c7", "สมุดเล่มเล็ก: แผนที่ภูมิประเทศและแผนที่ธรณีวิทยา", "บทที่ 6 องค์ประกอบแผนที่ มาตราส่วน พิกัด เส้นชั้นความสูง แผนที่ธรณีวิทยา", "สมุดเล่มเล็ก 8 หน้า", "เดี่ยว", "สั่งคาบที่ 23 · ส่งคาบที่ 25",
+      [BOOK8, "หน้า 1 ปก · 2 องค์ประกอบของแผนที่ · 3 มาตราส่วน · 4 ระบบพิกัด · 5 ทิศ · 6 เส้นชั้นความสูง · 7 สัญลักษณ์ในแผนที่ธรณีวิทยา · 8 ประโยชน์ของแผนที่", "แต่ละหน้ามีภาพหรือตัวอย่างสั้น ๆ"],
+      [["เนื้อหาถูกต้อง ครบ", 2], ["มีภาพ/ตัวอย่างประกอบ", 1], ["สวยงาม เรียบร้อย", 1], ["ส่งตรงเวลา", 1]]),
+    W("c8", "MI รู้จักตนเอง: ทรัพยากรธรณีบ้านเรา", "ทรัพยากรธรณีหรือลักษณะภูมิประเทศในจังหวัดของเรา", MI_FMT, "เดี่ยว", "สั่งคาบที่ 25 · ส่งคาบที่ 27",
+      ["หัวข้อ: ทรัพยากรธรณี (หิน แร่ ปิโตรเลียม) หรือลักษณะภูมิประเทศในจังหวัดของเรา 1 เรื่อง", "เลือกทำ 1 แบบที่ตัวเองถนัด (ดูรูปแบบด้านบน)", "บอกประโยชน์ และวิธีใช้อย่างยั่งยืน 1 วิธี", "เขียนท้ายงาน 1 บรรทัด: เลือกแบบนี้เพราะถนัดด้านใด"],
+      MI_RUB),
+    W("c10", "ชิ้นงาน: แบบจำลองภูมิประเทศจากเส้นชั้นความสูง (กิจกรรม 6.2)", "บทที่ 6 เส้นชั้นความสูงและภาพตัดขวาง", "แบบจำลอง + ภาพตัดขวาง + นำเสนอ", "กลุ่ม 3–4 คน", "สั่งคาบที่ 21 · นำเสนอคาบที่ 22",
+      ["รับแผนที่เส้นชั้นความสูงจากครู", "ตัดกระดาษแข็ง/โฟมตามเส้นชั้นความสูงแต่ละระดับแล้วซ้อนกัน (หรือปั้นดินน้ำมัน)", "วาดภาพตัดขวางตามแนว A–B", "นำเสนอ: ตรงไหนชัน ตรงไหนลาด ดูจากอะไร"],
+      [["แบบจำลองตรงกับแผนที่", 5], ["ภาพตัดขวางถูกต้อง", 4], ["อธิบายความชันจากเส้นชั้นความสูงได้", 3], ["ทำงานร่วมกัน เรียบร้อย", 3]]),
+  ],
+  pbl: [
+    W("c0", "มายแมพ: ทบทวนโครงงานของกลุ่ม", "ทบทวนเค้าโครงโครงงานจากภาคเรียนที่ 1", "มายแมพ กระดาษ A4", "เดี่ยว", "สั่งคาบที่ 1 · ส่งคาบที่ 2",
+      ["กลางหน้าเขียนชื่อโครงงาน", "แตกกิ่ง: ปัญหา/ที่มา · คำถาม · สมมติฐาน · ตัวแปรต้น-ตาม-ควบคุม · วิธีทดลองย่อ", "วงสีแดงจุดที่กลุ่มต้องปรับปรุงจากเทอม 1"],
+      [["ระบุปัญหา/คำถามชัดเจน", 2], ["สมมติฐานและตัวแปรถูกต้อง", 2], ["ส่งตรงเวลา", 1]]),
+    W("c1", "ปฏิทินแผนงานโครงงาน", "วางแผนการดำเนินงานภาคเรียนที่ 2", "ตารางแผนงาน 1 หน้า", "กลุ่ม", "สั่งคาบที่ 2 · ส่งคาบที่ 3",
+      ["ทำตารางแผนงานรายสัปดาห์จนถึงวันนำเสนอ: ใคร ทำอะไร เมื่อไร", "ระบุวัสดุอุปกรณ์ที่ต้องเตรียม", "ติดไว้หน้าแรกของสมุดบันทึกโครงงาน"],
+      [["แบ่งงานครบทุกคน", 2], ["ลำดับเวลาทำได้จริง", 2], ["ส่งตรงเวลา", 1]]),
+    W("c2", "สมุดบันทึกโครงงาน (Logbook)", "การลงมือทำโครงงานและเก็บข้อมูล", "บันทึกในสมุด", "เดี่ยว", "บันทึกคาบที่ 3–6 · ส่งคาบที่ 7",
+      ["บันทึกทุกครั้งที่ทำโครงงาน: วันที่ สิ่งที่ทำ ผลที่สังเกตได้ ปัญหาที่พบ", "ติดภาพถ่ายอย่างน้อย 3 ภาพ", "บันทึกผลการทดลองซ้ำอย่างน้อย 3 ครั้ง"],
+      [["บันทึกครบทุกครั้ง", 2], ["สังเกตละเอียด มีภาพ", 2], ["เรียบร้อย", 1]]),
+    W("c4", "ชิ้นงาน: ผลการทดลอง (ตาราง + กราฟ + บทที่ 4)", "การจัดกระทำข้อมูลและการเขียนบทที่ 4", "ตาราง กราฟ บทที่ 4 + นำเสนอ 3 นาที", "กลุ่ม", "สั่งคาบที่ 7 · ส่งคาบที่ 12",
+      ["จัดข้อมูลลงตาราง มีหัวตาราง หน่วย และค่าเฉลี่ย", "เขียนกราฟที่เหมาะสม (แท่ง/เส้น) มีชื่อกราฟ ชื่อแกน หน่วย", "บรรยายผล 3–5 บรรทัด บอกแนวโน้มของข้อมูล", "นำเสนอความคืบหน้ากลุ่มละ 3 นาที"],
+      [["ตารางถูกต้องครบถ้วน", 4], ["กราฟถูกต้อง ชื่อแกน/หน่วยครบ", 4], ["บรรยายแนวโน้มผลได้", 4], ["นำเสนอชัดเจน", 3]]),
+    W("c7", "แบบร่างแผงโครงงาน/โปสเตอร์", "การจัดทำแผงโครงงาน", "แบบร่าง A4", "กลุ่ม", "สั่งคาบที่ 22 · ส่งคาบที่ 23",
+      ["ร่างผังแผงโครงงานบนกระดาษ A4: ชื่อเรื่อง ที่มา วัตถุประสงค์ วิธีทำ ผล สรุป ภาพ", "กำหนดสีและขนาดตัวอักษร", "ให้ครูตรวจก่อนทำจริง"],
+      [["ครบองค์ประกอบ", 2], ["จัดวางอ่านง่าย", 2], ["ส่งตรงเวลา", 1]]),
+    W("c8", "ใบ Peer Review: ช่วยเพื่อนตรวจรายงาน", "ตรวจสอบและแก้ไขรายงานโครงงาน", "ใบความเห็น 1 หน้า", "เดี่ยว", "ทำในคาบที่ 22",
+      ["อ่านรายงานของกลุ่มอื่น 1 กลุ่ม", "เขียนจุดเด่น 2 ข้อ (⭐⭐) และคำแนะนำ 1 ข้อ (💡)", "กลุ่มเจ้าของรายงานเขียนตอบว่าจะแก้ไขอย่างไร"],
+      [["ความเห็นตรงประเด็น", 2], ["ภาษาสุภาพ สร้างสรรค์", 2], ["ส่งตรงเวลา", 1]]),
+    W("c9", "สื่อประกอบการนำเสนอ (Canva / คลิป / QR code)", "การจัดทำสื่อประกอบการนำเสนอโครงงาน", "สื่อดิจิทัล + QR code", "กลุ่ม", "สั่งคาบที่ 24 · ส่งคาบที่ 26",
+      ["เลือกทำ 1 อย่าง: อินโฟกราฟิกด้วย Canva · คลิปการทดลอง 1 นาที · สไลด์ 5 หน้า", "ทำ QR code ลิงก์ไปยังผลงาน ติดบนแผงโครงงาน", "ใส่ชื่อสมาชิกและแหล่งอ้างอิง"],
+      [["เนื้อหาตรงกับโครงงาน", 2], ["ใช้เทคโนโลยี/ศิลปะอย่างสร้างสรรค์", 2], ["QR code ใช้งานได้", 1]]),
+    W("c11", "นำเสนอโครงงานฉบับสมบูรณ์", "รายงานฉบับสมบูรณ์ แผงโครงงาน และการนำเสนอ", "รายงาน + แผงโครงงาน + นำเสนอ 5 นาที", "กลุ่ม", "นำเสนอคาบที่ 27–28",
+      ["ส่งรายงานฉบับสมบูรณ์ (บทที่ 1–5)", "จัดแสดงแผงโครงงาน", "นำเสนอกลุ่มละ 5 นาที ตอบคำถาม 2 นาที", "ทุกคนในกลุ่มต้องได้พูด"],
+      [["รายงานครบถ้วนถูกต้อง", 4], ["แผงโครงงานครบ สวยงาม", 3], ["นำเสนอชัดเจน ตรงเวลา", 4], ["ตอบคำถามได้", 2], ["ทุกคนมีส่วนร่วม", 2]]),
+  ],
+};
+function planKey(c) {
+  const r = R(c)?.name || "", s = c.subject || "";
+  if (s.includes("PBL") || s.includes("โครงงาน")) return "pbl";
+  if (s.startsWith("วิทยาศาสตร์")) return "sci2";
+  if (s.startsWith("โลก")) return "earth4";
+  if (s.startsWith("เคมี")) return { "ม.4": "chem4", "ม.5": "chem5", "ม.6": "chem6" }[r.slice(0, 3)];
+  return null;
+}
+// ถ้าช่องที่จะผูกกับงานมีคะแนนที่กรอกไว้แล้ว ย้ายคะแนนนั้นมาเป็นคะแนนงาน (ไม่ให้คะแนนเดิมหาย)
+function adoptScores(c, w) {
+  if (!w.col || c.works.some(x => x !== w && x.col === w.col)) return;
+  const col = colById(c, w.col); if (!col) return;
+  for (const sid in c.scores) { const v = c.scores[sid][w.col]; if (v === "" || v == null) continue;
+    ((c.wsc ||= {})[w.id] ||= {})[sid] = Math.round(v / (+col.max || 1) * (+w.max) * 100) / 100;
+    const sub = c.sub[w.id] ||= {}; if (!sub[sid]) sub[sid] = "ok"; }
+}
+function applyPlan(c) {
+  const list = WPLAN[planKey(c)]; if (!list) return 0;
+  let n = 0;
+  for (const p of list) {
+    if (c.works.some(w => w.name === p.n)) continue;
+    const col = c.cols.find(x => x.id === p.col && x.kind === "in");
+    const tot = p.r.reduce((a, x) => a + x[1], 0);
+    c.works.push({ id: uid(), name: p.n, col: col && !nbLinked(c, col) ? col.id : null, max: col ? +col.max : tot,
+      topic: p.t, fmt: p.f, who: p.w, when: p.d, how: [...p.h], rub: p.r.map(x => [...x]), plan: 1, ex: p.n });
+    adoptScores(c, c.works[c.works.length - 1]);
+    n++;
+  }
+  return n;
+}
+function migrate() {
+  for (const c of S.courses) {
+    c.works ||= []; c.sub ||= {}; c.wsc ||= {}; c.scores ||= {};
+    if (!c.planV) { applyPlan(c); c.planV = 1; }
+    for (const w of c.works) if (w.plan && !w.ex && EXW[w.name]) w.ex = w.name;
+  }
+}
+
+// ---------- ตัวอย่างผลงาน (แนวทางให้นักเรียนดู) ----------
+// ชนิดบล็อก: mm มายแมพ · comic การ์ตูน 4 ช่อง · book สมุดเล่มเล็ก · info อินโฟกราฟิก · cards การ์ด · tbl ตาราง · calc การคำนวณ · svg ภาพ · cmp เปรียบเทียบ · tip เคล็ดลับ
+const PAL = ["#E53935", "#FB8C00", "#F9A825", "#43A047", "#1E88E5", "#8E24AA", "#00897B", "#D81B60"];
+const SLOTS = [[170, 92], [500, 80], [830, 92], [150, 310], [850, 310], [170, 528], [500, 540], [830, 528]];
+const SLOT_ORDER = { 3: [3, 1, 4], 4: [0, 2, 5, 7], 5: [0, 1, 2, 5, 7], 6: [0, 1, 2, 5, 6, 7], 7: [0, 1, 2, 3, 5, 6, 7], 8: [0, 1, 2, 3, 4, 5, 6, 7] };
+function exMM(b) {
+  const sl = SLOT_ORDER[b.b.length] || SLOT_ORDER[8];
+  let lines = "", boxes = "";
+  b.b.forEach(([h, ls], i) => {
+    const [x, y] = SLOTS[sl[i]], col = PAL[i % PAL.length];
+    lines += `<path d="M500,310 Q${(500 + x) / 2},${y} ${x},${y}" stroke="${col}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+    boxes += `<foreignObject x="${x - 155}" y="${y - 78}" width="310" height="156"><div xmlns="http://www.w3.org/1999/xhtml" class="mmb" style="border-color:${col}${b.red === i ? ";box-shadow:0 0 0 4px #ff000055" : ""}"><b style="color:${col}">${esc(h)}</b>${ls.map(l => `<div>${esc(l)}</div>`).join("")}</div></foreignObject>`;
+  });
+  return `<div class="exw"><svg viewBox="0 0 1000 620" class="exsvg" style="min-width:720px">${lines}
+    <ellipse cx="500" cy="310" rx="125" ry="58" fill="#5B2D90"/><foreignObject x="385" y="262" width="230" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="mmc">${esc(b.c)}</div></foreignObject>${boxes}</svg></div>`;
+}
+function exComic(b) {
+  return `<div class="excomic">${b.p.map(([art, say, cap], i) => `<div class="cp"><span class="cn">${i + 1}</span><div class="art">${art}</div>${say ? `<div class="say">${esc(say)}</div>` : ""}<div class="cap">${esc(cap)}</div></div>`).join("")}</div>`;
+}
+function exBook(b) {
+  return `<div class="exbook">${b.p.map(([art, h, t], i) => `<div class="pg${i === 0 ? " cover" : ""}"><div class="art">${art}</div><b>${esc(h)}</b><div>${esc(t)}</div><span class="pn">${i + 1}</span></div>`).join("")}</div>`;
+}
+function exInfo(b) {
+  return `<div class="exinfo" style="--ic:${b.col || "#1E88E5"}"><div class="ih">${esc(b.h)}${b.s ? `<small>${esc(b.s)}</small>` : ""}</div>
+    <div class="ig">${b.p.map(([ic, h, ls]) => `<div class="is"><div class="ii">${ic}</div><b>${esc(h)}</b><ul>${ls.map(l => `<li>${esc(l)}</li>`).join("")}</ul></div>`).join("")}</div>${b.f ? `<div class="if">${esc(b.f)}</div>` : ""}</div>`;
+}
+function exCards(b) {
+  return `<div class="excards">${b.p.map(([ic, h, t]) => `<div class="ec"><div class="art">${ic}</div><b>${esc(h)}</b><div>${esc(t).replace(/\n/g, "<br>")}</div></div>`).join("")}</div>`;
+}
+const exTbl = b => `<div class="exw">${b.h ? `<div class="exh">${esc(b.h)}</div>` : ""}<table class="extbl">${b.r.map((r, i) => `<tr>${r.map(x => i ? `<td>${esc(x)}</td>` : `<th>${esc(x)}</th>`).join("")}</tr>`).join("")}</table></div>`;
+const exCalc = b => `<div class="excalc">${b.h ? `<b>${esc(b.h)}</b>` : ""}${b.l.map(l => `<div>${esc(l)}</div>`).join("")}</div>`;
+const exSvg = b => `<div class="exw">${b.s}${b.cap ? `<div class="mu" style="text-align:center">${esc(b.cap)}</div>` : ""}</div>`;
+const exCmp = b => `<div class="exw"><table class="extbl cmp"><tr><th></th><th>${esc(b.h[0])}</th><th>${esc(b.h[1])}</th></tr>${b.r.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join("")}</table></div>`;
+const exTip = b => `<div class="extip"><b>${esc(b.h || "💡 ทำแบบนี้ได้คะแนนเต็ม")}</b><ul>${b.l.map(l => `<li>${esc(l)}</li>`).join("")}</ul></div>`;
+const EXR = { mm: exMM, comic: exComic, book: exBook, info: exInfo, cards: exCards, tbl: exTbl, calc: exCalc, svg: exSvg, cmp: exCmp, tip: exTip };
+const exHTML = w => { const ex = EXW[w.ex || w.name]; return ex ? `<div class="exwrap">${ex.map(b => EXR[b.k](b)).join("")}<p class="exnote">ตัวอย่างนี้เป็นแนวทางเท่านั้น นักเรียนต้องเลือกตัวอย่าง/ข้อมูลและวาดเองด้วยฝีมือของตนเอง</p></div>` : ""; };
+
+// ---------- ภาพประกอบ (SVG) ----------
+const SVG_FILTER = `<svg viewBox="0 0 520 400" class="exsvg" style="max-width:520px">
+  <text x="130" y="22" text-anchor="middle" font-size="15" fill="#555">เทน้ำขุ่นลงด้านบน ⬇</text>
+  <path d="M60,40 L200,40 L200,250 L150,300 L150,330 L110,330 L110,300 L60,250 Z" fill="#E3F2FD" stroke="#1565C0" stroke-width="3"/>
+  <rect x="62" y="45" width="136" height="40" fill="#9E9E9E"/><rect x="62" y="85" width="136" height="45" fill="#D7B377"/>
+  <rect x="62" y="130" width="136" height="45" fill="#F1DFA6"/><rect x="62" y="175" width="136" height="45" fill="#333"/>
+  <path d="M62,220 L198,220 L198,249 L150,296 L112,296 L62,249 Z" fill="#fff" stroke="#bbb"/>
+  <g font-size="15" fill="#222"><text x="215" y="70">กรวด — กรองเศษใบไม้ ตะกอนใหญ่</text><text x="215" y="112">ทรายหยาบ — กรองตะกอนขนาดกลาง</text>
+  <text x="215" y="157">ทรายละเอียด — กรองตะกอนเล็ก</text><text x="215" y="202">ถ่านกัมมันต์ — ดูดซับสี/กลิ่น</text><text x="215" y="252">สำลี — กันทราย/ถ่านหลุดลงไป</text></g>
+  <path d="M100,345 L160,345 L155,395 L105,395 Z" fill="#E1F5FE" stroke="#0277BD" stroke-width="2"/><text x="170" y="380" font-size="15" fill="#0277BD">น้ำที่กรองแล้ว ใสขึ้น</text></svg>`;
+const SVG_LEMON = `<svg viewBox="0 0 640 300" class="exsvg" style="max-width:640px">
+  ${[0, 1, 2].map(i => { const x = 90 + i * 190; return `<ellipse cx="${x}" cy="200" rx="75" ry="55" fill="#FFEB3B" stroke="#F9A825" stroke-width="3"/>
+    <rect x="${x - 40}" y="120" width="14" height="80" fill="#9E9E9E" stroke="#616161"/><text x="${x - 33}" y="112" font-size="14" text-anchor="middle">Zn</text>
+    <rect x="${x + 26}" y="120" width="14" height="80" fill="#E67E22" stroke="#A04000"/><text x="${x + 33}" y="112" font-size="14" text-anchor="middle">Cu</text>
+    <text x="${x}" y="268" font-size="14" text-anchor="middle">มะนาวลูกที่ ${i + 1}</text>`; }).join("")}
+  <path d="M123,120 Q190,70 247,120" stroke="#C62828" stroke-width="3" fill="none"/><path d="M313,120 Q380,70 437,120" stroke="#C62828" stroke-width="3" fill="none"/>
+  <path d="M57,120 L57,40 L300,40" stroke="#212121" stroke-width="3" fill="none"/><path d="M503,120 L503,40 L340,40" stroke="#C62828" stroke-width="3" fill="none"/>
+  <circle cx="320" cy="34" r="16" fill="#FF5252" stroke="#B71C1C" stroke-width="2"/><text x="320" y="14" font-size="14" text-anchor="middle">LED</text>
+  <text x="70" y="60" font-size="13">ขั้วลบ (แอโนด Zn)</text><text x="420" y="60" font-size="13">ขั้วบวก (แคโทด Cu)</text></svg>`;
+const SVG_DOUGH = `<svg viewBox="0 0 560 260" class="exsvg" style="max-width:560px">
+  <ellipse cx="160" cy="170" rx="110" ry="55" fill="#64B5F6" stroke="#1565C0" stroke-width="3"/><ellipse cx="400" cy="170" rx="110" ry="55" fill="#64B5F6" stroke="#1565C0" stroke-width="3"/>
+  <rect x="262" y="125" width="36" height="95" rx="12" fill="#FFF8E1" stroke="#BCAAA4" stroke-width="3"/>
+  <path d="M190,125 L190,70 L262,70" stroke="#212121" stroke-width="3" fill="none"/><path d="M370,125 L370,70 L298,70" stroke="#212121" stroke-width="3" fill="none"/>
+  <circle cx="280" cy="64" r="16" fill="#FFEB3B" stroke="#F57F17" stroke-width="2"/><text x="280" y="38" font-size="14" text-anchor="middle">LED</text>
+  <rect x="20" y="20" width="90" height="40" rx="6" fill="#424242"/><text x="65" y="46" fill="#fff" font-size="14" text-anchor="middle">ถ่าน 4 ก้อน</text>
+  <path d="M110,32 L150,32 L150,140" stroke="#C62828" stroke-width="3" fill="none"/><path d="M110,50 L130,50 L130,230 L430,230 L430,200" stroke="#212121" stroke-width="3" fill="none"/>
+  <g font-size="14"><text x="110" y="180">แป้งนำไฟฟ้า (เกลือ)</text><text x="350" y="180">แป้งนำไฟฟ้า (เกลือ)</text><text x="230" y="252">แป้งไม่นำไฟฟ้า (น้ำตาล) คั่นกลาง</text></g></svg>`;
+const SVG_CONTOUR = (() => {
+  const L = [[100, 300, 240, 150], [200, 330, 180, 115], [300, 360, 115, 80], [400, 385, 55, 40]];
+  const W = [60, 150, 245, 330], E = [440, 475, 510, 540], B = 585, K = 0.36, y = h => B - h * K;
+  const pts = [[40, 0], [40, 60], ...W.map((x, i) => [x, (i + 1) * 100]), [385, 450], ...E.map((x, i) => [x, (4 - i) * 100]), [580, 60], [580, 0]].map(([x, h]) => `${x},${y(h)}`).join(" ");
+  return `<svg viewBox="0 0 620 615" class="exsvg" style="max-width:620px">
+  <rect x="10" y="10" width="600" height="380" fill="#F1F8E9" stroke="#999"/>
+  ${L.map(([h, cx, rx, ry]) => `<ellipse cx="${cx}" cy="200" rx="${rx}" ry="${ry}" fill="none" stroke="#8D6E63" stroke-width="2.5"/><text x="${cx - rx + 4}" y="196" font-size="13" fill="#5D4037">${h}</text>`).join("")}
+  <text x="385" y="205" font-size="16" text-anchor="middle">▲450</text>
+  <line x1="40" y1="200" x2="580" y2="200" stroke="#D32F2F" stroke-width="2" stroke-dasharray="6 4"/><text x="24" y="205" font-size="16" fill="#D32F2F">A</text><text x="585" y="205" font-size="16" fill="#D32F2F">B</text>
+  <text x="520" y="35" font-size="15">ทิศเหนือ ⬆</text><text x="20" y="378" font-size="13">ช่วงชั้นความสูง 100 ม.</text>
+  <text x="310" y="410" font-size="15" text-anchor="middle" font-weight="700">ภาพตัดขวางตามแนว A–B (ความสูง ม.)</text>
+  ${[0, 100, 200, 300, 400].map(h => `<line x1="40" x2="580" y1="${y(h)}" y2="${y(h)}" stroke="#ddd"/><text x="34" y="${y(h) + 4}" font-size="11" text-anchor="end">${h}</text>`).join("")}
+  <polygon points="${pts}" fill="#C5E1A5" stroke="#33691E" stroke-width="3"/>
+  ${[...W, ...E].map(x => `<line x1="${x}" x2="${x}" y1="200" y2="${B}" stroke="#bbb" stroke-dasharray="2 4"/>`).join("")}
+  <text x="150" y="607" font-size="13">ฝั่งตะวันตก: เส้นห่าง → ลาด</text><text x="410" y="607" font-size="13">ฝั่งตะวันออก: เส้นชิด → ชัน</text></svg>`;
+})();
+const SVG_BAR = `<svg viewBox="0 0 520 300" class="exsvg" style="max-width:520px">
+  <text x="270" y="22" font-size="16" text-anchor="middle" font-weight="700">กราฟความสูงเฉลี่ยของต้นถั่วเขียวในดินแต่ละชนิด (วันที่ 10)</text>
+  ${[0, 5, 10, 15].map(v => `<line x1="70" x2="500" y1="${250 - v * 13}" y2="${250 - v * 13}" stroke="#ddd"/><text x="62" y="${254 - v * 13}" font-size="12" text-anchor="end">${v}</text>`).join("")}
+  ${[["ดินร่วน", 14.2, "#43A047"], ["ดินเหนียว", 9.8, "#8D6E63"], ["ดินทราย", 7.5, "#F9A825"]].map(([n, v, c], i) => `<rect x="${110 + i * 135}" y="${250 - v * 13}" width="80" height="${v * 13}" fill="${c}"/><text x="${150 + i * 135}" y="${244 - v * 13}" font-size="14" text-anchor="middle" font-weight="700">${v}</text><text x="${150 + i * 135}" y="270" font-size="14" text-anchor="middle">${n}</text>`).join("")}
+  <line x1="70" y1="250" x2="500" y2="250" stroke="#333" stroke-width="2"/><line x1="70" y1="40" x2="70" y2="250" stroke="#333" stroke-width="2"/>
+  <text x="18" y="150" font-size="13" transform="rotate(-90 18 150)" text-anchor="middle">ความสูงเฉลี่ย (cm)</text><text x="285" y="292" font-size="13" text-anchor="middle">ชนิดของดิน</text></svg>`;
+const SVG_QR = `<svg viewBox="0 0 120 120" width="110" height="110" style="display:block;margin:auto">${[[8, 8], [80, 8], [8, 80]].map(([x, y]) => `<rect x="${x}" y="${y}" width="32" height="32" fill="none" stroke="#000" stroke-width="6"/><rect x="${x + 10}" y="${y + 10}" width="12" height="12"/>`).join("")}
+  ${[[52, 10], [60, 22], [50, 34], [62, 50], [52, 62], [84, 52], [96, 64], [72, 74], [86, 86], [100, 98], [56, 88], [64, 100], [48, 108], [76, 104], [104, 80]].map(([x, y]) => `<rect x="${x}" y="${y}" width="9" height="9"/>`).join("")}</svg>`;
+const SVG_POSTER = (t) => `<div class="exposter"><div class="pt">${esc(t)}</div><div class="pgd">
+  <div class="pb" style="grid-area:a"><b>ที่มาและความสำคัญ</b>ปัญหาที่พบ + ทำไมต้องแก้</div><div class="pb" style="grid-area:b"><b>วัตถุประสงค์ / สมมติฐาน</b>1–2 ข้อ</div>
+  <div class="pb" style="grid-area:c"><b>วิธีการ</b>ผังขั้นตอน + ภาพถ่ายการทดลอง 📷</div><div class="pb big" style="grid-area:d"><b>ผลการทดลอง</b>ตาราง + กราฟ 📊 (ส่วนที่ใหญ่ที่สุด)</div>
+  <div class="pb" style="grid-area:e"><b>สรุปผล</b>ตอบวัตถุประสงค์</div><div class="pb" style="grid-area:f"><b>ข้อเสนอแนะ / บรรณานุกรม</b>+ QR code คลิป</div></div>
+  <div class="pfoot">ชื่อสมาชิก · ครูที่ปรึกษา · โรงเรียน</div></div>`;
+
+// ---------- เนื้อหาตัวอย่างแต่ละงาน ----------
+const MI_PICK = l => ({ k: "tip", h: "✍️ ท้ายงานเขียนว่า", l: [l] });
+const EXW = {
+  // ===== วิทย์ ม.2 =====
+  "การ์ตูน 4 ช่อง: เครื่องกลอย่างง่ายรอบตัวฉัน": [
+    { k: "comic", p: [["✂️📄", "ด้ามยาว ออกแรงนิดเดียวก็ตัดได้!", "กรรไกร = คาน มีจุดหมุนที่หมุดตรงกลาง ออกแรงที่ด้าม ทำให้ตัดกระดาษได้ง่าย"],
+      ["♿⛰️", "ไม่ต้องยกขึ้นตรง ๆ แล้ว", "ทางลาด = พื้นเอียง ใช้แรงน้อยกว่ายกขึ้นตรง ๆ แต่ต้องเข็นเป็นระยะทางไกลขึ้น"],
+      ["🏳️⬆️", "ดึงลง ธงขึ้น!", "เสาธง = รอกเดี่ยวตายตัว ช่วยเปลี่ยนทิศทางของแรง (ดึงลง ธงเลื่อนขึ้น)"],
+      ["🚪🔄", "หมุนด้ามกลมนิดเดียว สลักก็เลื่อน", "ลูกบิดประตู = ล้อและเพลา หมุนล้อ (ด้ามจับ) ที่ใหญ่กว่า เพลาเล็กหมุนตาม ใช้แรงน้อย"]] },
+    { k: "tip", l: ["เลือกของจริงที่เจอที่บ้าน/โรงเรียน คนละชิ้นไม่ซ้ำกับตัวอย่าง", "ทุกช่องต้องบอกทั้ง 'ชนิดเครื่องกล' และ 'ช่วยทุ่นแรงอย่างไร'", "ระบายสี เขียนชื่อ-เลขที่มุมขวาบน"] }],
+  "มายแมพ: หน่วยที่ 5 งานและพลังงาน": [
+    { k: "mm", c: "งานและพลังงาน", b: [["งาน (W)", ["W = F × s  หน่วย จูล (J)", "แรงกับการเคลื่อนที่ต้องทิศเดียวกัน", "เช่น ยกกระเป๋าขึ้นบันได"]],
+      ["กำลัง (P)", ["P = W ÷ t  หน่วย วัตต์ (W)", "ทำงานเท่ากัน ใช้เวลาน้อย = กำลังมาก", "เช่น วิ่งขึ้นบันได vs เดินขึ้น"]],
+      ["เครื่องกลอย่างง่าย", ["คาน รอก พื้นเอียง ลิ่ม สกรู ล้อและเพลา", "ช่วยผ่อนแรง หรือเปลี่ยนทิศของแรง", "เช่น กรรไกร ทางลาด"]],
+      ["พลังงานศักย์โน้มถ่วง", ["Ep = mgh  หน่วย J", "ยิ่งสูง ยิ่งหนัก Ep ยิ่งมาก", "เช่น น้ำในเขื่อน"]],
+      ["พลังงานจลน์", ["Ek = ½mv²  หน่วย J", "ยิ่งเร็ว Ek ยิ่งมาก (v ยกกำลังสอง)", "เช่น ลูกบอลที่กลิ้ง"]],
+      ["กฎการอนุรักษ์พลังงาน", ["พลังงานไม่สูญหาย เปลี่ยนรูปได้", "Ep + Ek = คงที่ (ไม่มีแรงต้าน)", "เช่น รถไฟเหาะ ชิงช้า"]]] },
+    { k: "tip", l: ["ใช้ 1 สีต่อ 1 กิ่ง และวาดภาพเล็ก ๆ ประกอบทุกกิ่ง", "สูตรต้องมีหน่วยกำกับทุกสูตร", "ยกตัวอย่างของตัวเองที่ไม่ซ้ำกับในตัวอย่างอย่างน้อย 3 กิ่ง"] }],
+  "ชิ้นงาน STEM: เครื่องกรองน้ำอย่างง่าย": [
+    { k: "svg", s: SVG_FILTER, cap: "ตัวอย่างแบบร่างเครื่องกรองน้ำจากขวดพลาสติกตัดครึ่ง (คว่ำปากขวดลง)" },
+    { k: "tbl", h: "ตัวอย่างแบบบันทึกการทดสอบ", r: [["รายการ", "ครั้งที่ 1", "ครั้งที่ 2 (ปรับปรุง)"], ["ลักษณะน้ำก่อนกรอง", "ขุ่น สีน้ำตาล", "ขุ่น สีน้ำตาล"], ["ลักษณะน้ำหลังกรอง", "ขุ่นเล็กน้อย", "ใสขึ้นมาก"], ["เวลาที่ใช้กรอง 200 mL", "1 นาที 10 วินาที", "2 นาที 05 วินาที"], ["สิ่งที่ปรับปรุง", "-", "เพิ่มชั้นทรายละเอียดให้หนาขึ้น 2 cm"]] },
+    { k: "tip", h: "🎤 ตัวอย่างหัวข้อที่พูดตอนนำเสนอ (3 นาที)", l: ["ใช้การกรอง (ตะกอนติดอยู่ในชั้นกรวด-ทราย) และการดูดซับ (ถ่านดูดสี/กลิ่น)", "ผลทดสอบครั้งที่ 1 และ 2 ต่างกันอย่างไร เพราะอะไร", "น้ำที่กรองแล้วยังไม่สะอาดพอจะดื่ม ต้องต้มหรือฆ่าเชื้อก่อน"] }],
+  "สมุดเล่มเล็ก: โลกและดินของเรา": [
+    { k: "book", p: [["🌍", "โลกและดินของเรา", "โดย ด.ช.ตัวอย่าง ดีมาก ม.2/1 เลขที่ 0"],
+      ["🥚", "โครงสร้างภายในโลก", "เปลือกโลก → เนื้อโลก → แก่นโลกชั้นนอก (ของเหลว) → แก่นโลกชั้นใน (ของแข็ง)"],
+      ["🌳🪨", "การผุพังอยู่กับที่", "หินแตกหรือเปลี่ยนไปโดยไม่เคลื่อนที่ เช่น รากไม้ชอนไชหินจนแตก"],
+      ["🌊", "การกร่อน", "ตะกอนถูกน้ำ ลม หรือธารน้ำแข็งพาไป เช่น ตลิ่งริมแม่น้ำพัง"],
+      ["🏝️", "การสะสมตัวของตะกอน", "ตะกอนตกทับถมเมื่อตัวพาหมดแรง เช่น สันดอนปากแม่น้ำ"],
+      ["🍂+🪨", "ดินเกิดอย่างไร", "หินผุพัง + ซากพืชซากสัตว์ + น้ำ + อากาศ ใช้เวลานานมาก"],
+      ["📏", "ชั้นหน้าตัดดิน", "O ซากพืช · A ดินบน สีเข้ม · E ชั้นชะล้าง · B ดินล่าง · C หินผุ · R หินพื้น"],
+      ["❓", "คำถามชวนคิด", "1) ทำไมดินบนสีเข้มกว่าดินล่าง 2) ถ้าไม่มีต้นไม้ ตลิ่งจะเป็นอย่างไร 3) ดินที่บ้านเป็นดินชนิดใด"]] },
+    { k: "tip", l: ["พับกระดาษ A4 1 แผ่นเป็นเล่ม 8 หน้า", "ทุกหน้ามีหัวเรื่อง + ข้อความสั้น 2–3 บรรทัด + ภาพวาด", "หน้า 8 แต่งคำถามเอง 3 ข้อ"] }],
+  "อินโฟกราฟิก: ภัยธรรมชาติใกล้ตัว": [
+    { k: "info", col: "#1565C0", h: "🌧️ น้ำท่วม ภัยใกล้ตัว รู้ทัน ป้องกันได้", s: "ตัวอย่างอินโฟกราฟิก 1 หน้า A4", p: [
+      ["⚠️", "สาเหตุ", ["ฝนตกหนักต่อเนื่องหลายวัน", "น้ำทะเลหนุนสูง", "ทางระบายน้ำอุดตันด้วยขยะ", "ตัดไม้ทำลายป่าต้นน้ำ"]],
+      ["👀", "สัญญาณเตือน", ["ฝนตกหนักติดต่อกันนาน", "ระดับน้ำในคลอง/แม่น้ำสูงขึ้นเร็ว", "น้ำป่าขุ่นแดง มีเสียงดังจากต้นน้ำ"]],
+      ["🛟", "ป้องกันและเอาตัวรอด", ["ติดตามประกาศเตือนภัย", "ย้ายของขึ้นที่สูง ตัดไฟ", "ไม่เดินลุยน้ำไหลแรง", "เตรียมกระเป๋าฉุกเฉิน", "สายด่วน ปภ. 1784"]]], f: "ทำโดย ด.ญ.ตัวอย่าง ม.2/1 · ข้อมูลจากหนังสือเรียนหน่วยที่ 7" },
+    { k: "tip", l: ["เลือกภัยคนละ 1 อย่าง ห้องเดียวกันพยายามไม่ซ้ำกันมาก", "ใช้ไอคอน/ภาพ + ข้อความสั้น อ่านจบใน 1 นาที", "พูดหน้าห้อง 1 นาที: สาเหตุ → สัญญาณเตือน → วิธีเอาตัวรอด"] }],
+  "MI รู้จักตนเอง: พลังงานแห่งอนาคต": [
+    { k: "cards", p: [["🎨", "แบบที่ 1 วาดโปสเตอร์ (ถนัดด้านภาพ)", "\"บ้านพลังงานสะอาดในฝัน\"\nแผงโซลาร์เซลล์บนหลังคา + กังหันลมหลังบ้าน\nป้ายเตือน: ปิดไฟ ปิดแอร์ เมื่อไม่ใช้"],
+      ["🎵", "แบบที่ 2 แร็ปสั้น (ถนัดด้านดนตรี)", "แดดจ้ายามเช้า แผงโซลาร์รับไป\nลมพัดกังหันหมุน ไฟฟ้าเกิดได้\nน้ำมัน ถ่านหิน วันหนึ่งต้องหมดไป\nปิดไฟ ปิดแอร์ ช่วยโลกได้ไกล"],
+      ["✉️", "แบบที่ 3 จดหมาย (ถนัดด้านภาษา)", "ถึงตัวฉันในอีก 10 ปี…\nหวังว่าบ้านเราใช้ไฟจากแสงอาทิตย์แล้ว\nและฉันยังปิดไฟทุกครั้งที่ออกจากห้อง"]] },
+    MI_PICK("\"ฉันเลือกแต่งแร็ป เพราะฉันชอบร้องเพลงและจำเนื้อหาได้ดีเมื่อมีจังหวะ\""),
+    { k: "tip", l: ["ต้องมีพลังงานทดแทนอย่างน้อย 1 ชนิด และวิธีประหยัดพลังงาน 1 วิธี", "เลือกแบบไหนก็ได้ แต่ต้องเป็นแบบที่ตัวเองถนัดจริง"] }],
+  "สอบปฏิบัติ: ตรวจวัดสมบัติของดิน": [
+    { k: "tbl", h: "ตัวอย่างตารางบันทึกผล (กลุ่มที่ 0)", r: [["รายการตรวจ", "วิธีตรวจ", "ผลที่ได้"], ["แหล่งดิน", "-", "แปลงผักหลังโรงเรียน"], ["สีของดิน", "สังเกตด้วยตา", "น้ำตาลเข้ม"], ["เนื้อดิน", "ปั้นดินชื้นเป็นเส้น", "ปั้นเป็นเส้นได้ แต่แตกเมื่องอ → ดินร่วน"], ["ความชื้น", "บีบดินในมือ", "ชื้นเล็กน้อย จับตัวเป็นก้อนหลวม ๆ"], ["pH", "ผสมดินกับน้ำกลั่น จุ่มกระดาษยูนิเวอร์ซัลอินดิเคเตอร์ เทียบแถบสี", "pH ประมาณ 6.5 (กรดอ่อน ๆ เกือบเป็นกลาง)"]] },
+    { k: "calc", h: "สรุปผล", l: ["ดินตัวอย่างเป็นดินร่วน มี pH ประมาณ 6.5 เหมาะปลูกผักส่วนใหญ่ เช่น ผักบุ้ง คะน้า", "เพราะดินร่วนระบายน้ำดีแต่ยังอุ้มน้ำได้ และ pH ใกล้เป็นกลาง"] },
+    { k: "tip", h: "👩‍🏫 ครูดูตอนให้คะแนน", l: ["ใช้น้ำกลั่น ไม่ใช้มือจับกระดาษอินดิเคเตอร์ส่วนที่จุ่ม", "อ่านสีเทียบแถบสีภายในเวลาที่กำหนด", "สรุปได้ว่าดินเหมาะกับพืชอะไร พร้อมเหตุผล", "ล้างมือ เก็บอุปกรณ์ เช็ดโต๊ะ"] }],
+  // ===== เคมี ม.4 =====
+  "การ์ตูน 4 ช่อง: 'โมล' อธิบายให้น้องเข้าใจ": [
+    { k: "comic", p: [["🥚🥚🥚", "พี่ ๆ ไข่ 1 โหลมีกี่ฟอง?", "1 โหล = 12 ฟอง → 'โหล' คือหน่วยนับของ"],
+      ["⚛️✨", "แล้วอะตอมเล็กมาก นับเป็นโหลไม่ไหว!", "นักเคมีใช้หน่วย 'โมล': 1 โมล = 6.02 × 10²³ อนุภาค"],
+      ["💧⚖️", "น้ำ 1 โมลหนักเท่าไร?", "H₂O มวลโมเลกุล = 2(1) + 16 = 18 → น้ำ 1 mol หนัก 18 g (ประมาณ 18 mL)"],
+      ["🧮😎", "น้ำ 36 g มีกี่โมเลกุล?", "36 ÷ 18 = 2 mol → 2 × 6.02 × 10²³ = 1.204 × 10²⁴ โมเลกุล"]] },
+    { k: "tip", l: ["เปรียบเทียบกับหน่วยนับในชีวิตประจำวันของตัวเอง (โหล กุรุส รีม ฯลฯ)", "ต้องมีตัวอย่างเปลี่ยนโมล ↔ มวล 1 ข้อ แสดงตัวเลข", "ใช้สารอื่นแทนน้ำ เช่น CO₂ หรือ NaCl เพื่อไม่ให้ซ้ำตัวอย่าง"] }],
+  "มายแมพ: บทที่ 4 โมลและสูตรเคมี": [
+    { k: "mm", c: "โมล (mol)", b: [["จำนวนอนุภาค", ["n = N ÷ 6.02×10²³", "N = จำนวนอะตอม/โมเลกุล/ไอออน"]],
+      ["มวล", ["n = m ÷ M", "m (g), M = มวลต่อโมล (g/mol)"]],
+      ["ปริมาตรแก๊สที่ STP", ["n = V ÷ 22.4", "V หน่วย L (dm³) ที่ 0 °C 1 atm"]],
+      ["ร้อยละโดยมวล", ["%A = (มวล A ÷ มวลสาร) × 100", "เช่น C ใน CO₂ = 12/44 × 100 = 27.3%"]],
+      ["สูตรอย่างง่าย / สูตรโมเลกุล", ["หาอัตราส่วนโมลอย่างต่ำ = สูตรอย่างง่าย", "(สูตรอย่างง่าย)ₙ = สูตรโมเลกุล"]],
+      ["โจทย์ตัวอย่าง", ["CO₂ 11 g = 11 ÷ 44 = 0.25 mol", "ปริมาตรที่ STP = 0.25 × 22.4 = 5.6 L"]]] },
+    { k: "tip", l: ["ทุกสูตรมีหน่วยกำกับ", "โจทย์ตัวอย่างใช้สารอื่นที่ไม่ใช่ CO₂ และแสดงวิธีทำทีละขั้น", "ใช้สีต่างกันแต่ละกิ่ง"] }],
+  "สอบปฏิบัติ: การเตรียมสารละลาย": [
+    { k: "calc", h: "ตัวอย่างการคำนวณ: เตรียม NaCl 0.10 mol/L ปริมาตร 100 mL", l: ["n = C × V = 0.10 mol/L × 0.100 L = 0.010 mol", "M ของ NaCl = 23.0 + 35.5 = 58.5 g/mol", "m = n × M = 0.010 × 58.5 = 0.585 g"] },
+    { k: "tbl", h: "ตัวอย่างใบบันทึกผล", r: [["ขั้นตอน", "บันทึก"], ["มวลที่คำนวณได้", "0.585 g"], ["มวลที่ชั่งได้จริง", "0.586 g"], ["อุปกรณ์", "เครื่องชั่ง 3 ตำแหน่ง, บีกเกอร์ 50 mL, ขวดวัดปริมาตร 100 mL, กรวย, แท่งแก้วคน"], ["ความเข้มข้นจริง", "0.586 ÷ 58.5 ÷ 0.100 = 0.100 mol/L"], ["ฉลาก", "NaCl 0.10 mol/L · 13 ม.ค. 70 · ผู้เตรียม: นายตัวอย่าง"]] },
+    { k: "tip", h: "👩‍🏫 ครูดูตอนให้คะแนน", l: ["ชั่งสารในภาชนะ ไม่วางสารบนจานเครื่องชั่งโดยตรง", "ละลายในบีกเกอร์ก่อน แล้วล้างบีกเกอร์เทตามลงขวดวัดปริมาตร", "เติมน้ำจนส่วนโค้งล่างแตะขีด สายตาอยู่ระดับเดียวกับขีด", "ปิดจุก คว่ำขวดกลับไปมาให้ผสมกัน แล้วติดฉลากครบ"] }],
+  "อินโฟกราฟิก: ปฏิกิริยาเคมีรอบตัวฉัน": [
+    { k: "info", col: "#E65100", h: "🔬 ปฏิกิริยาเคมีรอบตัวฉัน", s: "สังเกต → เขียนสมการ → ดุลให้ถูก", p: [
+      ["🔥", "เผาแก๊สหุงต้ม (โพรเพน)", ["สังเกต: เปลวไฟ ให้ความร้อน", "C₃H₈ + 5O₂ → 3CO₂ + 4H₂O"]],
+      ["🔩", "ตะปูเหล็กเป็นสนิม", ["สังเกต: เกิดผงสีน้ำตาลแดง", "4Fe + 3O₂ → 2Fe₂O₃"]],
+      ["🧁", "ผงฟู (NaHCO₃) + น้ำส้มสายชู", ["สังเกต: ฟองแก๊สฟู่", "NaHCO₃ + CH₃COOH → CH₃COONa + H₂O + CO₂"]]], f: "ตรวจสอบ: จำนวนอะตอมแต่ละธาตุทางซ้าย = ทางขวา ✔" },
+    { k: "tip", l: ["เลือกปฏิกิริยาของตัวเอง 3 อย่าง (ซ้ำกับตัวอย่างได้ไม่เกิน 1 อย่าง)", "ทุกปฏิกิริยาต้องมี 'สิ่งที่สังเกตได้' + สมการที่ดุลแล้ว"] }],
+  "สมุดเล่มเล็ก: ปริมาณสารสัมพันธ์": [
+    { k: "book", p: [["⚗️", "ปริมาณสารสัมพันธ์", "โดย นายตัวอย่าง ม.4/1"],
+      ["⚖️", "ดุลสมการ", "N₂ + 3H₂ → 2NH₃ อะตอม N และ H ซ้าย = ขวา"],
+      ["🧮", "โมล–มวล", "n = m ÷ M · 2H₂ + O₂ → 2H₂O: H₂ 4 g = 2 mol → H₂O 2 mol = 36 g"],
+      ["🧪", "โมล–ความเข้มข้น", "n = C × V(L) · HCl 0.5 mol/L 200 mL = 0.1 mol"],
+      ["🎈", "โมล–ปริมาตรแก๊ส", "n = V ÷ 22.4 (STP) · CaCO₃ 10 g → CO₂ 0.1 mol = 2.24 L"],
+      ["🚧", "สารกำหนดปริมาณ", "สารที่หมดก่อน · H₂ 2 mol + O₂ 2 mol → H₂ หมดก่อน O₂ เหลือ 1 mol"],
+      ["📈", "ผลได้ร้อยละ", "= ผลได้จริง ÷ ผลได้ตามทฤษฎี × 100 · ได้จริง 27 g จาก 36 g = 75%"],
+      ["📝", "โจทย์ทบทวน", "Mg 2.4 g + HCl มากเกินพอ ได้ H₂ ที่ STP กี่ L? เฉลย 0.1 mol = 2.24 L"]] },
+    { k: "tip", l: ["ทุกหน้ามีสูตร 1 สูตร + ตัวอย่างตัวเลขสั้น ๆ", "หน้า 8 แต่งโจทย์เอง 2 ข้อพร้อมเฉลย"] }],
+  "MI รู้จักตนเอง: สารละลายในชีวิตประจำวัน": [
+    { k: "cards", p: [["📖", "แบบที่ 1 นิทานสั้น (ถนัดด้านภาษา)", "\"ไอศกรีมโบราณของคุณตา\"\nคุณตาโรยเกลือลงในน้ำแข็งรอบถังไอศกรีม\nน้ำเกลือมีจุดเยือกแข็งต่ำกว่า 0 °C\nจึงเย็นจัดจนไอศกรีมแข็งตัวได้"],
+      ["🧪", "แบบที่ 2 ทดลองที่บ้าน + คลิป (ถนัดด้านการเคลื่อนไหว/ลงมือทำ)", "ต้มน้ำเปล่ากับน้ำเกลือ วัดอุณหภูมิตอนเดือด\nผล: น้ำเกลือเดือดที่อุณหภูมิสูงกว่าน้ำเปล่าเล็กน้อย\nอธิบาย: ตัวละลายทำให้จุดเดือดสูงขึ้น"],
+      ["🎵", "แบบที่ 3 เพลงสั้น (ถนัดด้านดนตรี)", "น้ำหวานเข้มข้น เติมน้ำให้จางลง\nโมลเท่าเดิม ปริมาตรเพิ่มขึ้นตรง ๆ\nจำสูตรไว้นะ C₁V₁ = C₂V₂"]] },
+    MI_PICK("\"ฉันเลือกทดลองและถ่ายคลิป เพราะฉันเรียนรู้ได้ดีเมื่อได้ลงมือทำเอง\""),
+    { k: "tip", l: ["ต้องมีหลักเคมีอย่างน้อย 1 อย่าง: ความเข้มข้น การเจือจาง จุดเดือดสูงขึ้น หรือจุดเยือกแข็งต่ำลง"] }],
+  "สอบปฏิบัติ: ผลได้ร้อยละ (กิจกรรม 6.3)": [
+    { k: "tbl", h: "ตัวอย่างใบบันทึกผล (Na₂CO₃ + CaCl₂ → CaCO₃ + 2NaCl)", r: [["รายการ", "ผลที่ได้"], ["มวล Na₂CO₃ ที่ใช้", "1.06 g"], ["CaCl₂", "ใช้มากเกินพอ"], ["มวลกระดาษกรอง", "0.95 g"], ["มวลกระดาษกรอง + ตะกอนแห้ง", "1.87 g"], ["มวลตะกอน CaCO₃ (ผลได้จริง)", "1.87 − 0.95 = 0.92 g"]] },
+    { k: "calc", h: "การคำนวณ", l: ["Na₂CO₃ (M = 106) = 1.06 ÷ 106 = 0.010 mol", "อัตราส่วน Na₂CO₃ : CaCO₃ = 1 : 1 → CaCO₃ 0.010 mol", "ผลได้ตามทฤษฎี = 0.010 × 100 = 1.00 g", "ผลได้ร้อยละ = 0.92 ÷ 1.00 × 100 = 92%"] },
+    { k: "tip", h: "📌 อภิปราย: ทำไมไม่ถึง 100%", l: ["ตะกอนบางส่วนติดค้างในบีกเกอร์/แท่งแก้ว", "ตะกอนละเอียดลอดผ่านกระดาษกรอง", "สูญเสียระหว่างถ่ายตะกอน (ถ้าเกิน 100% อาจเพราะตะกอนยังไม่แห้ง)"] }],
+  // ===== เคมี ม.5 =====
+  "สำรวจกรด-เบสในบ้านด้วยน้ำกะหล่ำปลีม่วง": [
+    { k: "tbl", h: "ตัวอย่างตารางบันทึกผล (ติดภาพถ่ายหลอด/แก้วทุกตัวอย่าง)", r: [["ของในบ้าน", "สีที่เห็น", "กรด / กลาง / เบส"], ["น้ำมะนาว", "แดงอมชมพู", "กรด"], ["น้ำส้มสายชู", "ชมพู", "กรด"], ["น้ำเปล่า", "ม่วง (สีเดิม)", "กลาง"], ["ผงฟู (โซดาไบคาร์บอเนต) ละลายน้ำ", "น้ำเงินอมเขียว", "เบส"], ["น้ำสบู่", "เขียว", "เบส"]] },
+    { k: "tip", l: ["วิธีทำน้ำกะหล่ำปลีม่วง: หั่นใบ แช่น้ำร้อน 10 นาที กรองเอาน้ำสีม่วง", "ใช้ปริมาณน้ำกะหล่ำปลีเท่ากันทุกแก้ว", "ห้ามใช้น้ำยาล้างห้องน้ำหรือสารอันตราย", "เลือกของในบ้านตัวเอง 5 อย่าง (ซ้ำกับตัวอย่างได้ไม่เกิน 2 อย่าง)"] }],
+  "มายแมพ: กรด-เบส": [
+    { k: "mm", c: "กรด-เบส", b: [["ทฤษฎี 3 แบบ", ["อาร์เรเนียส: ให้ H⁺ / OH⁻ ในน้ำ", "เบรินสเตด-ลาวรี: ให้/รับโปรตอน", "ลิวอิส: รับ/ให้คู่อิเล็กตรอน"]],
+      ["กรดแก่ / กรดอ่อน", ["แก่: แตกตัวเกือบ 100% เช่น HCl", "อ่อน: แตกตัวบางส่วน เช่น CH₃COOH"]],
+      ["Ka Kb Kw", ["Kw = [H₃O⁺][OH⁻] = 1.0×10⁻¹⁴ (25 °C)", "คู่กรด-เบส: Ka × Kb = Kw"]],
+      ["pH และ pOH", ["pH = −log[H₃O⁺]", "pH + pOH = 14 (25 °C)", "pH < 7 กรด · = 7 กลาง · > 7 เบส"]],
+      ["สมบัติของเกลือ", ["NaCl เป็นกลาง", "NH₄Cl เป็นกรด (ไฮโดรลิซิส)", "CH₃COONa เป็นเบส"]],
+      ["ปฏิกิริยาสะเทิน", ["กรด + เบส → เกลือ + น้ำ", "HCl + NaOH → NaCl + H₂O"]],
+      ["อินดิเคเตอร์", ["ฟีนอล์ฟทาลีน: ไม่มีสี → ชมพู (pH 8.3–10.0)", "เมทิลออเรนจ์: แดง → เหลือง (pH 3.1–4.4)"]]] },
+    { k: "tip", l: ["ใช้สีแดงกับเรื่องกรด สีน้ำเงินกับเรื่องเบส", "ใส่สูตรสำคัญครบ และยกตัวอย่างสารจริงทุกกิ่ง"] }],
+  "สอบปฏิบัติ: การไทเทรตกรด-เบส": [
+    { k: "tbl", h: "ตัวอย่างใบบันทึกผล: ไทเทรต HCl 25.00 mL ด้วย NaOH 0.100 mol/L (ฟีนอล์ฟทาลีน)", r: [["", "ครั้งที่ 1", "ครั้งที่ 2"], ["อ่านบิวเรตต์ก่อนไทเทรต (mL)", "0.00", "0.50"], ["อ่านบิวเรตต์ที่จุดยุติ (mL)", "24.60", "25.05"], ["ปริมาตร NaOH ที่ใช้ (mL)", "24.60", "24.55"], ["สีที่จุดยุติ", "ชมพูอ่อนคงอยู่ 30 วินาที", "ชมพูอ่อนคงอยู่ 30 วินาที"]] },
+    { k: "calc", h: "การคำนวณ", l: ["ปริมาตร NaOH เฉลี่ย = (24.60 + 24.55) ÷ 2 = 24.58 mL", "HCl + NaOH → NaCl + H₂O (1 : 1)", "C(HCl) = 0.100 × 24.58 ÷ 25.00 = 0.0983 mol/L"] },
+    { k: "tip", h: "👩‍🏫 ครูดูตอนให้คะแนน", l: ["กลั้วบิวเรตต์ด้วยสารละลาย NaOH ก่อนบรรจุ และไล่ฟองอากาศที่ปลาย", "อ่านปริมาตรที่ส่วนโค้งล่าง ทศนิยม 2 ตำแหน่ง", "หยด NaOH ช้า ๆ ใกล้จุดยุติ พร้อมแกว่งขวดรูปกรวยตลอด", "สวมแว่นตานิรภัย"] }],
+  "อินโฟกราฟิก: แบตเตอรี่รอบตัวฉัน": [
+    { k: "info", col: "#2E7D32", h: "🔋 แบตเตอรี่รอบตัวฉัน", s: "เซลล์ปฐมภูมิ (ใช้ครั้งเดียว) vs เซลล์ทุติยภูมิ (ชาร์จได้)", p: [
+      ["🔦", "ถ่านไฟฉายอัลคาไลน์ AA", ["เซลล์ปฐมภูมิ ใช้หมดแล้วทิ้ง", "ห้ามนำไปชาร์จ", "ทิ้งในถังขยะอันตราย"]],
+      ["📱", "แบตโทรศัพท์ (ลิเทียมไอออน)", ["เซลล์ทุติยภูมิ ชาร์จได้หลายรอบ", "ถ้าแบตบวม หยุดใช้ทันที", "ไม่ชาร์จทิ้งไว้บนที่นอน"]],
+      ["🚗", "แบตรถยนต์ (ตะกั่ว-กรด)", ["เซลล์ทุติยภูมิ", "มีกรดกำมะถัน อันตรายต่อผิวหนัง", "ส่งคืนร้านเพื่อรีไซเคิล"]]], f: "แบตเตอรี่ทุกชนิด ห้ามทิ้งรวมกับขยะทั่วไป" },
+    { k: "tip", l: ["สำรวจแบตเตอรี่ที่มีในบ้านตัวเองจริง 3 ชนิด ถ่ายภาพประกอบ", "บอกชนิดเซลล์ + วิธีใช้/ทิ้งอย่างปลอดภัย ครบทุกชนิด"] }],
+  "สมุดเล่มเล็ก: ไฟฟ้าเคมี": [
+    { k: "book", p: [["⚡", "ไฟฟ้าเคมี", "โดย นางสาวตัวอย่าง ม.5/1"],
+      ["🔢", "เลขออกซิเดชัน", "ธาตุอิสระ = 0 · O ส่วนใหญ่ −2 · H ส่วนใหญ่ +1 · Mn ใน KMnO₄ = +7"],
+      ["🔁", "ปฏิกิริยารีดอกซ์", "ออกซิเดชัน = เสีย e⁻ · รีดักชัน = รับ e⁻ · Zn + Cu²⁺ → Zn²⁺ + Cu"],
+      ["⚖️", "ดุลสมการรีดอกซ์", "Zn → Zn²⁺ + 2e⁻ · Cu²⁺ + 2e⁻ → Cu · รวม: Zn + Cu²⁺ → Zn²⁺ + Cu"],
+      ["🔋", "เซลล์กัลวานิก", "Zn(s)|Zn²⁺(aq)||Cu²⁺(aq)|Cu(s) · แอโนด Zn (ขั้วลบ) · แคโทด Cu (ขั้วบวก)"],
+      ["📐", "ศักย์ไฟฟ้ามาตรฐาน", "E°cell = E°แคโทด − E°แอโนด = 0.34 − (−0.76) = 1.10 V"],
+      ["🔌", "เซลล์อิเล็กโทรไลต์", "ใช้ไฟฟ้าทำให้เกิดปฏิกิริยา เช่น แยกน้ำ: H₂ เกิดที่แคโทด O₂ เกิดที่แอโนด"],
+      ["🥄", "การชุบโลหะ", "ชิ้นงานเป็นแคโทด โลหะที่ใช้ชุบเป็นแอโนด สารละลายมีไอออนของโลหะที่ชุบ"]] },
+    { k: "tip", l: ["ทุกหน้ามีภาพหรือแผนภาพเล็ก ๆ เช่น วาดเซลล์ ลูกศรอิเล็กตรอน", "ใช้ตัวอย่างโลหะคู่อื่นแทน Zn–Cu อย่างน้อย 1 หน้า"] }],
+  "MI รู้จักตนเอง: รีดอกซ์ในชีวิตประจำวัน": [
+    { k: "cards", p: [["🎨", "แบบที่ 1 โปสเตอร์ (ถนัดด้านภาพ)", "\"ทำไมรั้วเหล็กเป็นสนิม\"\nFe ให้อิเล็กตรอน (ถูกออกซิไดส์)\nO₂ รับอิเล็กตรอน (ถูกรีดิวซ์)\nป้องกัน: ทาสี ชุบสังกะสี"],
+      ["🍎", "แบบที่ 2 ทดลอง + คลิป (ถนัดลงมือทำ)", "หั่นแอปเปิล 2 ชิ้น ชิ้นหนึ่งบีบมะนาว\nทิ้งไว้ 30 นาที ชิ้นที่ไม่บีบเป็นสีน้ำตาล\nเพราะสารในผลไม้ทำปฏิกิริยากับ O₂ (ออกซิเดชัน)\nวิตามินซีในมะนาวช่วยชะลอ"],
+      ["📝", "แบบที่ 3 ปริศนาอักษรไขว้ (ถนัดด้านตรรกะ)", "แนวนอน 1: การเสียอิเล็กตรอน (ออกซิเดชัน)\nแนวตั้ง 2: ขั้วที่เกิดรีดักชัน (แคโทด)\nพร้อมเฉลยด้านหลัง"]] },
+    MI_PICK("\"ฉันเลือกทำโปสเตอร์ เพราะฉันจำได้ดีเมื่อเห็นเป็นภาพ\""),
+    { k: "tip", l: ["ต้องบอกให้ได้ว่า สารใดให้อิเล็กตรอน สารใดรับอิเล็กตรอน"] }],
+  "ชิ้นงาน: เซลล์ไฟฟ้าจากผลไม้": [
+    { k: "svg", s: SVG_LEMON, cap: "ต่อมะนาว 3 ลูกแบบอนุกรม: Cu ของลูกหนึ่งต่อกับ Zn ของลูกถัดไป" },
+    { k: "tbl", h: "ตัวอย่างผลการวัด", r: [["จำนวนมะนาว (ต่ออนุกรม)", "ความต่างศักย์ที่วัดได้ (V)", "หลอด LED สีแดง"], ["1 ลูก", "0.9", "ไม่ติด"], ["2 ลูก", "1.8", "ไม่ติด"], ["3 ลูก", "2.7", "ติด"]] },
+    { k: "calc", h: "ครึ่งปฏิกิริยา", l: ["แอโนด (Zn, ขั้วลบ): Zn → Zn²⁺ + 2e⁻", "แคโทด (Cu, ขั้วบวก): 2H⁺ + 2e⁻ → H₂ (H⁺ จากกรดในมะนาว)"] },
+    { k: "tip", l: ["ขัดแผ่นโลหะให้สะอาด และไม่ให้แผ่น Zn กับ Cu แตะกันในผลไม้", "ขายาวของ LED ต่อด้านขั้วบวก (Cu)", "ลองผลไม้อื่นเปรียบเทียบได้ เช่น ส้ม มะเฟือง"] }],
+  // ===== เคมี ม.6 =====
+  "การ์ตูน 4 ช่อง: ฝนหลวง เคมีแก้ภัยแล้ง": [
+    { k: "comic", p: [["☀️🌾", "ฝนไม่ตกมา 2 เดือนแล้ว…", "ปัญหา: ภัยแล้ง นาข้าวขาดน้ำ"],
+      ["✈️🧂", "ขั้นที่ 1 ก่อกวน!", "โปรยสารที่ดูดความชื้น เช่น เกลือแกง (NaCl) เป็นแกนให้ไอน้ำกลั่นตัว เกิดเมฆ"],
+      ["✈️☁️", "ขั้นที่ 2 เลี้ยงให้อ้วน!", "โปรยสารเพิ่มเติม ให้เมฆก่อตัวหนาแน่นและมีหยดน้ำมากขึ้น"],
+      ["✈️🌧️", "ขั้นที่ 3 โจมตี!", "โปรยสารที่ทำให้เย็น เช่น น้ำแข็งแห้ง หรือยูเรีย หยดน้ำรวมตัวใหญ่ขึ้นจนตกเป็นฝน"]] },
+    { k: "tip", l: ["เรียงลำดับ ก่อกวน → เลี้ยงให้อ้วน → โจมตี ให้ถูก", "บอกสารเคมีอย่างน้อย 1 ชนิด และหน้าที่ของสารนั้น"] }],
+  "มายแมพ: วิธีการทางวิทยาศาสตร์ กับ กระบวนการออกแบบเชิงวิศวกรรม": [
+    { k: "cmp", h: ["วิธีการทางวิทยาศาสตร์ (กิจกรรม 14.1)", "กระบวนการออกแบบเชิงวิศวกรรม (กิจกรรม 14.2)"], r: [
+      ["เป้าหมาย", "หาคำตอบ/คำอธิบายปรากฏการณ์", "สร้างวิธีแก้ปัญหาหรือชิ้นงานที่ใช้ได้จริง"],
+      ["ขั้นที่ 1", "ระบุปัญหา ตั้งคำถาม: ครีมกันแดดป้องกัน UVB ควรมีส่วนผสมอย่างไร", "ระบุปัญหาและเงื่อนไข: ทำสายไฟจากแป้งโดว์ให้หลอด LED ติด"],
+      ["ขั้นที่ 2", "สืบค้นข้อมูล: สารกันแดด เช่น ZnO, Padimate O", "รวบรวมข้อมูล: สารใดละลายแล้วนำไฟฟ้า (เกลือ) / ไม่นำ (น้ำตาล)"],
+      ["ขั้นที่ 3", "ตั้งสมมติฐาน: ปริมาณ ZnO มีผลต่อการป้องกัน UVB", "ออกแบบวิธีแก้ปัญหา: วาดแบบวงจรแป้งโดว์"],
+      ["ขั้นที่ 4", "ตรวจสอบสมมติฐาน: ทำครีม ZnO 10–25% วัดค่า SPF", "วางแผนและสร้างชิ้นงาน"],
+      ["ขั้นที่ 5", "วิเคราะห์ข้อมูลและสรุปผล", "ทดสอบ ประเมินผล ปรับปรุง (ทำซ้ำได้หลายรอบ)"],
+      ["ขั้นที่ 6", "นำเสนอผล", "นำเสนอวิธีการและชิ้นงาน"],
+      ["เหมือนกัน", "เริ่มจากปัญหา · ใช้ความรู้และข้อมูล · ลงมือทดสอบอย่างเป็นระบบ", ""],
+      ["ต่างกัน", "ได้ 'ความรู้/คำอธิบาย' · ทดสอบสมมติฐาน", "ได้ 'ชิ้นงาน/วิธีแก้' · วนปรับปรุงจนใช้ได้"]] },
+    { k: "tip", l: ["ทำเป็นมายแมพ 2 ฝั่ง หรือตารางเปรียบเทียบก็ได้", "ทุกขั้นยกตัวอย่างจากกิจกรรมที่กลุ่มตัวเองทำจริง", "ตรงกลางเขียนเหมือน/ต่าง อย่างน้อย 3 ข้อ"] }],
+  "ชิ้นงาน: สายไฟแป้งโดว์ (กิจกรรม 14.2)": [
+    { k: "svg", s: SVG_DOUGH, cap: "ตัวอย่างแบบร่าง: แป้งนำไฟฟ้า 2 ก้อนคั่นด้วยแป้งไม่นำไฟฟ้า ต่อกับถ่านและ LED" },
+    { k: "tbl", h: "ตัวอย่างสูตรและผลการทดสอบ", r: [["", "แป้งนำไฟฟ้า", "แป้งไม่นำไฟฟ้า"], ["ส่วนผสม", "แป้งสาลี 1½ ถ้วย น้ำ 1 ถ้วย เกลือ ¼ ถ้วย ครีมออฟทาร์ทาร์ 3 ช้อนโต๊ะ น้ำมันพืช 1 ช้อนโต๊ะ", "แป้งสาลี 1½ ถ้วย น้ำตาล ½ ถ้วย น้ำมันพืช 3 ช้อนโต๊ะ น้ำกลั่น ½ ถ้วย"], ["ทดสอบครั้งที่ 1", "แป้งนำไฟฟ้า 2 ก้อนแตะกัน → LED ไม่ติด (ไฟฟ้าลัดผ่านแป้ง)", ""], ["ปรับปรุงครั้งที่ 2", "คั่นกลางด้วยแป้งไม่นำไฟฟ้า → LED ติด ✔", ""]] },
+    { k: "calc", h: "อธิบายหลักเคมี", l: ["เกลือ (NaCl) ละลายแล้วแตกตัวเป็น Na⁺ และ Cl⁻ ซึ่งเคลื่อนที่ได้ แป้งผสมเกลือจึงนำไฟฟ้า", "น้ำตาลละลายเป็นโมเลกุล ไม่แตกตัวเป็นไอออน แป้งผสมน้ำตาลจึงไม่นำไฟฟ้า"] }],
+  "สมุดบันทึกการทำงานโครงงาน (Logbook)": [
+    { k: "tbl", h: "ตัวอย่างหน้า Logbook (โครงงานสมมุติ: ถ่านกะลามะพร้าวดูดกลิ่นในห้องน้ำโรงเรียน)", r: [["วันที่", "สิ่งที่ทำ", "ผลที่ได้", "ปัญหา / วิธีแก้", "ลงชื่อ"], ["13 ม.ค. 70", "เผาถ่านกะลามะพร้าว บดเป็นชิ้นเล็ก", "ได้ถ่าน 300 g", "ถ่านชื้น → ตากแดด 1 วัน", "ก. ข. ค."], ["15 ม.ค. 70", "ใส่ถ่าน 100 g ในถุงผ้า วางในห้องน้ำ 2 ห้อง", "ห้องที่มีถ่าน กลิ่นลดลง (สำรวจความเห็น 10 คน)", "คนตอบน้อย → ทำแบบสอบถามสั้นลง", "ก. ข. ค."], ["20 ม.ค. 70", "เปลี่ยนถุงถ่าน ทดลองซ้ำครั้งที่ 2", "ผลคล้ายครั้งแรก", "-", "ก. ข. ค."]] },
+    { k: "tip", l: ["บันทึกทุกคาบ แม้วันที่ไม่มีผลใหม่ (เขียนว่าทำอะไร)", "ติดภาพถ่ายอย่างน้อย 3 ภาพ เขียนคำอธิบายใต้ภาพ", "สมาชิกลงชื่อทุกหน้า"] }],
+  "ใบสรุปการเข้าร่วมประชุมวิชาการ (กิจกรรม 14.7–14.8)": [
+    { k: "tbl", h: "ตัวอย่างใบสรุป (เรื่องสมมุติ ใช้เป็นแนวการเขียนเท่านั้น)", r: [["หัวข้อ", "สิ่งที่บันทึก"], ["ชื่อเรื่อง", "การใช้ผงเปลือกไข่ปรับดินเปรี้ยว"], ["ผู้นำเสนอ / งาน", "นักเรียน ม.ปลาย (คลิปที่ครูให้ดู)"], ["ปัญหา", "ดินในแปลงผักเป็นกรด ผักโตช้า"], ["วิธีการ", "ผสมผงเปลือกไข่ (CaCO₃) 0, 10, 20 g ในดิน 1 kg วัด pH ทุก 3 วัน"], ["ผลที่ได้", "ยิ่งใส่ผงเปลือกไข่มาก pH ของดินยิ่งเพิ่มเข้าใกล้ 7"], ["สิ่งที่ได้เรียนรู้", "1) ใช้ปฏิกิริยากรด-เบสแก้ปัญหาจริงได้ 2) ต้องมีชุดควบคุมเพื่อเปรียบเทียบ"], ["คำถามที่อยากถาม", "ถ้าใส่มากเกินไป ดินจะเป็นเบสจนพืชโตไม่ดีหรือไม่"]] },
+    { k: "tip", l: ["สรุปจากเรื่องที่ตัวเองดูจริง ห้ามใช้เรื่องในตัวอย่าง", "เขียนสิ่งที่ได้เรียนรู้ 2 ข้อ และคำถาม 1 ข้อ"] }],
+  "MI รู้จักตนเอง: สิ่งที่ฉันได้เรียนรู้จากโครงงาน": [
+    { k: "cards", p: [["📔", "แบบที่ 1 บันทึกสะท้อนคิด (ถนัดด้านเข้าใจตนเอง)", "\"เคมีช่วยให้ห้องน้ำโรงเรียนหอมขึ้น\"\nหน้าที่ของฉัน: วัดผลและทำแบบสอบถาม\nสิ่งที่ภูมิใจ: ทำงานตรงเวลาทุกครั้ง\nครั้งหน้าจะ: วางแผนเก็บข้อมูลให้มากขึ้น"],
+      ["🎨", "แบบที่ 2 การ์ตูนช่อง (ถนัดด้านภาพ)", "ช่อง 1 ห้องน้ำเหม็น → ช่อง 2 ถ่านดูดซับกลิ่น\n→ ช่อง 3 ทดลองวัดผล → ช่อง 4 ฉันได้เรียนรู้ว่า…"],
+      ["🤝", "แบบที่ 3 สัมภาษณ์เพื่อนในกลุ่ม (ถนัดด้านมนุษยสัมพันธ์)", "ถามเพื่อน 3 คำถาม: ได้เรียนรู้อะไร / ยากที่สุดคืออะไร / ถ้าทำใหม่จะเปลี่ยนอะไร\nแล้วสรุปเป็นคลิปหรือบทสัมภาษณ์"]] },
+    MI_PICK("\"ฉันเลือกเขียนบันทึก เพราะฉันชอบทบทวนความคิดของตัวเองเงียบ ๆ\""),
+    { k: "tip", l: ["ต้องบอกหน้าที่ของตัวเองในกลุ่ม และสิ่งที่จะทำให้ดีขึ้นครั้งหน้า 1 ข้อ"] }],
+  "โปสเตอร์และการนำเสนอผลงาน (กิจกรรม 14.5–14.6)": [
+    { k: "svg", s: SVG_POSTER("ถ่านกะลามะพร้าวดูดกลิ่นในห้องน้ำโรงเรียน (ตัวอย่างสมมุติ)"), cap: "ตัวอย่างการจัดวางโปสเตอร์: ส่วนผลการทดลองใหญ่ที่สุด อ่านจากซ้ายไปขวา บนลงล่าง" },
+    { k: "tip", h: "🎤 ลำดับการนำเสนอ 5 นาที", l: ["นาทีที่ 1: ปัญหาและที่มา (คนที่ 1)", "นาทีที่ 2: วิธีการ (คนที่ 2)", "นาทีที่ 3–4: ผลการทดลองและสรุป ชี้ที่กราฟ (คนที่ 3)", "นาทีที่ 5: ข้อเสนอแนะ แล้วเปิดให้ถามคำถาม (คนที่ 4)"] }],
+  // ===== โลกฯ ม.4 =====
+  "ภาพถ่าย: หินและแร่ในบ้านฉัน": [
+    { k: "cards", p: [["✏️", "ไส้ดินสอ", "แร่แกรไฟต์"], ["🥛", "แก้วน้ำ", "ทรายแก้ว (แร่ควอตซ์)"], ["🏠", "ปูนซีเมนต์", "หินปูน"], ["🧂", "เกลือ", "แร่เฮไลต์"], ["🍳", "หม้ออะลูมิเนียม", "แร่บอกไซต์"]] },
+    { k: "calc", h: "สรุป", l: ["\"ถ้าไม่มีทรัพยากรธรณี เราจะไม่มีดินสอเขียนหนังสือ ไม่มีบ้านปูน และไม่มีหม้อหุงข้าว\""] },
+    { k: "tip", l: ["ถ่ายภาพของจริงในบ้านตัวเอง 5 อย่าง (ใช้ภาพจากอินเทอร์เน็ตไม่ได้)", "ใต้ภาพเขียน: ชื่อของใช้ → ทำจากหิน/แร่อะไร"] }],
+  "มายแมพ: แร่": [
+    { k: "mm", c: "แร่", b: [["ความหมาย", ["ของแข็งที่เกิดเองตามธรรมชาติ", "มีองค์ประกอบเคมีและโครงสร้างผลึกเฉพาะตัว"]],
+      ["สี / สีผง", ["สีผง = สีของผงแร่เมื่อขีดบนแผ่นกระเบื้องไม่เคลือบ", "ฮีมาไทต์ สีผงน้ำตาลแดง"]],
+      ["ความวาว", ["วาวแบบโลหะ เช่น ไพไรต์", "วาวแบบแก้ว เช่น ควอตซ์"]],
+      ["ความแข็ง (โมส์ 1–10)", ["1 ทัลก์ 2 ยิปซัม 3 แคลไซต์ 4 ฟลูออไรต์ 5 อะพาไทต์", "6 ออร์โทเคลส 7 ควอตซ์ 8 โทแพซ 9 คอรันดัม 10 เพชร"]],
+      ["แนวแตกเรียบ / รอยแตก", ["ไมกาแตกเป็นแผ่นบาง", "ควอตซ์มีรอยแตกแบบก้นหอย"]],
+      ["ความถ่วงจำเพาะ", ["= ความหนาแน่นแร่ ÷ ความหนาแน่นน้ำ", "กาลีนาหนักมาก (ประมาณ 7.5)"]],
+      ["รูปผลึก", ["เฮไลต์ ผลึกลูกบาศก์", "ควอตซ์ ผลึกหกเหลี่ยม"]],
+      ["ทดสอบกับกรด", ["หยด HCl เจือจางบนแคลไซต์ เกิดฟองแก๊ส CO₂"]]] },
+    { k: "tip", l: ["ใส่สเกลความแข็งของโมส์ให้ครบ 10 ลำดับ", "วาดภาพผลึกหรือแร่ประกอบอย่างน้อย 3 กิ่ง"] }],
+  "สอบปฏิบัติ: ระบุชนิดแร่และหิน": [
+    { k: "tbl", h: "ตัวอย่างตารางบันทึกผล (เวียน 5 ฐาน)", r: [["ฐาน", "สิ่งที่สังเกต/ทดสอบ", "ระบุว่าเป็น"], ["1", "สีทองเหลือง วาวแบบโลหะ สีผงดำแกมเขียว ขีดแก้วเป็นรอย", "แร่ไพไรต์"], ["2", "ใส ไม่มีสี วาวแบบแก้ว ขีดแก้วเป็นรอย (ความแข็ง 7) รอยแตกแบบก้นหอย", "แร่ควอตซ์"], ["3", "สีขาว วาวแบบแก้ว แนวแตกเรียบ 3 แนว หยดกรด HCl เจือจางเกิดฟอง", "แร่แคลไซต์"], ["4", "เนื้อหยาบ ผลึกใหญ่มองเห็นด้วยตา มีแร่ควอตซ์ เฟลด์สปาร์ ไมกา", "หินแกรนิต (หินอัคนีแทรกซอน)"], ["5", "เนื้อละเอียด แตกเป็นแผ่นบางเรียบ", "หินชนวน (หินแปร)"]] },
+    { k: "tip", h: "👩‍🏫 ครูดูตอนให้คะแนน", l: ["ขีดสีผงบนแผ่นกระเบื้องไม่เคลือบ", "ทดสอบความแข็งเรียงจากเล็บ → เหรียญ → แก้ว", "หยดกรดเพียง 1 หยด แล้วเช็ดออก สวมแว่นตานิรภัย", "ระบุชนิดโดยอ้างผลการทดสอบ ไม่เดา"] }],
+  "อินโฟกราฟิก: ปิโตรเลียมจากใต้ดินสู่ชีวิตเรา": [
+    { k: "info", col: "#37474F", h: "🛢️ ปิโตรเลียม จากใต้ดินสู่ชีวิตเรา", s: "เกิด → สำรวจ → ขุดเจาะ → กลั่น → ผลิตภัณฑ์", p: [
+      ["🦠", "1. เกิด", ["ซากสิ่งมีชีวิตในทะเลทับถมใต้ตะกอน", "ความร้อน ความดัน นานหลายล้านปี", "สะสมในหินกักเก็บใต้หินปิดกั้น"]],
+      ["📡", "2. สำรวจ", ["สำรวจด้วยคลื่นไหวสะเทือน", "ดูโครงสร้างชั้นหินที่กักเก็บได้"]],
+      ["🏗️", "3. ขุดเจาะ", ["แท่นขุดเจาะ เช่น ในอ่าวไทย", "ส่งน้ำมันดิบและแก๊สขึ้นฝั่ง"]],
+      ["🏭", "4. กลั่น", ["กลั่นลำดับส่วน แยกตามจุดเดือด"]],
+      ["🏠", "5. ผลิตภัณฑ์ในบ้าน", ["แก๊สหุงต้ม (LPG)", "น้ำมันเบนซิน / ดีเซล", "ยางมะตอย", "ถุงและขวดพลาสติก"]],
+      ["🌍", "ผลกระทบและวิธีลด", ["การเผาไหม้ปล่อย CO₂ ทำให้โลกร้อน", "ลด: ใช้รถสาธารณะ พกถุงผ้า"]]] },
+    { k: "tip", l: ["วาดเป็นลูกศรต่อกันตามลำดับขั้น", "ผลิตภัณฑ์ 5 อย่างต้องเป็นของที่มีในบ้านตัวเอง"] }],
+  "สมุดเล่มเล็ก: แผนที่ภูมิประเทศและแผนที่ธรณีวิทยา": [
+    { k: "book", p: [["🗺️", "แผนที่ภูมิประเทศและแผนที่ธรณีวิทยา", "โดย นายตัวอย่าง ม.4/1"],
+      ["🧩", "องค์ประกอบของแผนที่", "ชื่อแผนที่ · ทิศ · มาตราส่วน · สัญลักษณ์และคำอธิบาย · ระบบพิกัด"],
+      ["📏", "มาตราส่วน", "1 : 50,000 คือ 1 ซม. บนแผนที่ = 500 ม. จริง · วัดได้ 4 ซม. = 2 กม."],
+      ["📍", "ระบบพิกัด", "ละติจูด–ลองจิจูด (องศา) และพิกัดกริด UTM · อ่านไปทางขวาก่อน แล้วขึ้นบน"],
+      ["🧭", "ทิศ", "ทิศเหนือจริง · ทิศเหนือกริด · ทิศเหนือแม่เหล็ก"],
+      ["⛰️", "เส้นชั้นความสูง", "เส้นเชื่อมจุดที่สูงเท่ากัน · เส้นชิด = ชัน · เส้นห่าง = ลาด"],
+      ["🎨", "แผนที่ธรณีวิทยา", "สีแทนหน่วยหินและอายุ · สัญลักษณ์รอยเลื่อน · แนวการวางตัวของชั้นหิน"],
+      ["🏗️", "ประโยชน์", "วางแผนสร้างเขื่อน ถนน · หาแหล่งแร่ แหล่งน้ำบาดาล · พื้นที่เสี่ยงดินถล่ม"]] },
+    { k: "tip", l: ["หน้ามาตราส่วนแต่งโจทย์คำนวณเอง 1 ข้อ", "วาดภาพประกอบทุกหน้า เช่น ลูกศรทิศเหนือ เส้นชั้นความสูง"] }],
+  "MI รู้จักตนเอง: ทรัพยากรธรณีบ้านเรา": [
+    { k: "cards", p: [["🎨", "แบบที่ 1 โปสเตอร์ท่องเที่ยว (ถนัดด้านภาพ)", "\"ภูเขาหินปูนเขาสก\"\nหินปูนเป็นหินตะกอน เกิดจากการสะสมของแคลเซียมคาร์บอเนต\nน้ำฝนละลายหินปูน เกิดถ้ำและหน้าผาสวยงาม\nใช้อย่างยั่งยืน: เที่ยวโดยไม่ทิ้งขยะ ไม่หักหินงอกหินย้อย"],
+      ["🎙️", "แบบที่ 2 คลิปไกด์นำเที่ยว (ถนัดด้านภาษา/การพูด)", "พูด 1 นาที แนะนำทรัพยากรธรณีในจังหวัด\nบอกว่าเป็นหิน/แร่อะไร มีประโยชน์อย่างไร"],
+      ["🌿", "แบบที่ 3 เก็บตัวอย่างหินรอบบ้าน (ถนัดด้านธรรมชาติ)", "เก็บหิน 3 ก้อน ติดป้ายชื่อ ที่มา และชนิด (อัคนี/ตะกอน/แปร)\nถ่ายภาพจัดแสดงเป็นแผ่นนิทรรศการ"]] },
+    MI_PICK("\"ฉันเลือกเก็บตัวอย่างหิน เพราะฉันชอบสังเกตธรรมชาติรอบตัว\""),
+    { k: "tip", l: ["เลือกเรื่องในจังหวัดของเรา 1 เรื่อง บอกประโยชน์ และวิธีใช้อย่างยั่งยืน 1 วิธี"] }],
+  "ชิ้นงาน: แบบจำลองภูมิประเทศจากเส้นชั้นความสูง (กิจกรรม 6.2)": [
+    { k: "svg", s: SVG_CONTOUR, cap: "ตัวอย่างแผนที่เส้นชั้นความสูงและภาพตัดขวางตามแนว A–B" },
+    { k: "tip", h: "🛠️ วิธีทำแบบจำลอง", l: ["ลอกเส้นชั้นความสูงแต่ละระดับลงกระดาษลูกฟูก/โฟม แล้วตัดตามเส้น", "ซ้อนแผ่นจากระดับต่ำ (100 ม.) ขึ้นไปสูง (400 ม.) ทากาวให้ตรงตำแหน่ง", "ระบายสีตามความสูง เขียนทิศเหนือและมาตราส่วน", "นำเสนอ: ฝั่งที่เส้นชิดกันชันกว่า ฝั่งที่เส้นห่างลาดกว่า"] }],
+  // ===== โครงงาน PBL (หัวข้อสมมุติ) =====
+  "มายแมพ: ทบทวนโครงงานของกลุ่ม": [
+    { k: "mm", c: "ผลของชนิดดินต่อความสูงของต้นถั่วเขียว", red: 5, b: [["ปัญหา / ที่มา", ["ดินแต่ละแปลงในโรงเรียนต่างกัน", "ผักบางแปลงไม่ค่อยงาม"]],
+      ["คำถาม", ["ดินชนิดใดทำให้ต้นถั่วเขียวสูงที่สุด", "ในเวลา 10 วัน"]],
+      ["สมมติฐาน", ["ถ้าปลูกในดินร่วน ต้นถั่วเขียวจะสูงกว่า", "ปลูกในดินเหนียวและดินทราย"]],
+      ["ตัวแปร", ["ต้น: ชนิดของดิน", "ตาม: ความสูงของต้นถั่วเขียว", "ควบคุม: น้ำ แสง จำนวนเมล็ด ขนาดกระถาง"]],
+      ["วิธีทดลองย่อ", ["ปลูกเมล็ด 10 เมล็ด/กระถาง", "รดน้ำ 50 mL ทุกเช้า", "วัดความสูงทุก 2 วัน"]],
+      ["⭕ ต้องปรับปรุง", ["เทอม 1 ทำดินละ 1 กระถาง", "→ เพิ่มเป็นดินละ 3 กระถาง (ทำซ้ำ)"]]] },
+    { k: "tip", l: ["ใช้ชื่อโครงงานของกลุ่มตัวเอง (หัวข้อในตัวอย่างเป็นหัวข้อสมมุติ)", "วงสีแดงจุดที่ต้องปรับปรุงจากเทอม 1 อย่างน้อย 1 จุด"] }],
+  "ปฏิทินแผนงานโครงงาน": [
+    { k: "tbl", h: "ตัวอย่างปฏิทินแผนงาน (■ = ช่วงที่ทำ)", r: [["งาน", "ผู้รับผิดชอบ", "สัปดาห์ 1–2", "3–4", "5–6", "7–8", "9–10", "11–12", "13–14"], ["เตรียมดิน กระถาง เมล็ด", "ต้น", "■", "", "", "", "", "", ""], ["ปลูกและวัดความสูง", "ฝน, ปลา", "", "■", "■", "", "", "", ""], ["ถ่ายภาพ / บันทึก Logbook", "แบม", "■", "■", "■", "■", "", "", ""], ["ทำตาราง กราฟ เขียนบทที่ 4", "ทุกคน", "", "", "", "■", "■", "", ""], ["เขียนบทที่ 5 รายงาน", "ฝน, แบม", "", "", "", "", "■", "■", ""], ["ทำแผงโครงงาน ซ้อมนำเสนอ", "ทุกคน", "", "", "", "", "", "■", "■"]] },
+    { k: "tip", l: ["ทุกคนต้องมีชื่อในงานอย่างน้อย 1 งาน", "เขียนวัสดุอุปกรณ์ที่ต้องเตรียมไว้ใต้ตาราง", "ติดไว้หน้าแรกของสมุดบันทึกโครงงาน"] }],
+  "สมุดบันทึกโครงงาน (Logbook)": [
+    { k: "tbl", h: "ตัวอย่างหน้า Logbook (หัวข้อสมมุติ)", r: [["วันที่", "สิ่งที่ทำ", "ผลที่สังเกตได้", "ปัญหาที่พบ / วิธีแก้"], ["วันที่ 1", "ปลูกเมล็ดถั่วเขียว ดินละ 3 กระถาง กระถางละ 10 เมล็ด รดน้ำ 50 mL", "-", "ดินทรายแห้งเร็ว → รดน้ำเวลาเดียวกันทุกกระถาง"], ["วันที่ 3", "นับต้นงอก วัดความสูง", "ดินร่วนงอก 9 ต้น สูงเฉลี่ย 2.1 cm", "ไม้บรรทัดสั้น → ใช้สายวัด"], ["วันที่ 5", "วัดความสูงครั้งที่ 2 ถ่ายภาพ", "ดินร่วนสูงที่สุด ดินทรายใบเหลืองเล็กน้อย", "-"]] },
+    { k: "tip", l: ["บันทึกทุกครั้งที่ทำ ใส่ตัวเลขที่วัดได้จริง", "ติดภาพถ่ายอย่างน้อย 3 ภาพ เขียนวันที่ใต้ภาพ", "ทดลองซ้ำอย่างน้อย 3 ครั้ง/3 กระถาง"] }],
+  "ชิ้นงาน: ผลการทดลอง (ตาราง + กราฟ + บทที่ 4)": [
+    { k: "tbl", h: "ตารางที่ 1 ความสูงของต้นถั่วเขียวในดินแต่ละชนิด เมื่อปลูกครบ 10 วัน (หน่วย: cm)", r: [["ชนิดของดิน", "กระถางที่ 1", "กระถางที่ 2", "กระถางที่ 3", "ค่าเฉลี่ย"], ["ดินร่วน", "14.0", "14.5", "14.1", "14.2"], ["ดินเหนียว", "9.5", "10.2", "9.7", "9.8"], ["ดินทราย", "7.8", "7.1", "7.6", "7.5"]] },
+    { k: "svg", s: SVG_BAR },
+    { k: "calc", h: "ตัวอย่างการบรรยายผล (บทที่ 4)", l: ["จากตารางที่ 1 และกราฟ พบว่าต้นถั่วเขียวที่ปลูกในดินร่วนมีความสูงเฉลี่ยมากที่สุด คือ 14.2 cm", "รองลงมาคือดินเหนียว 9.8 cm และดินทรายน้อยที่สุด 7.5 cm", "แสดงว่าชนิดของดินมีผลต่อความสูงของต้นถั่วเขียว"] },
+    { k: "tip", l: ["ตารางต้องมีชื่อตาราง หน่วย และค่าเฉลี่ย", "กราฟต้องมีชื่อกราฟ ชื่อแกน และหน่วย", "บรรยายแนวโน้ม: มากที่สุด → น้อยที่สุด แล้วสรุป 1 ประโยค"] }],
+  "แบบร่างแผงโครงงาน/โปสเตอร์": [
+    { k: "svg", s: SVG_POSTER("ผลของชนิดดินต่อความสูงของต้นถั่วเขียว (ตัวอย่างสมมุติ)"), cap: "แบบร่างบนกระดาษ A4: วาดกรอบแต่ละส่วน ยังไม่ต้องใส่รายละเอียดครบ" },
+    { k: "tip", l: ["ชื่อโครงงานตัวใหญ่ที่สุด อ่านได้จากระยะ 2 เมตร", "ใช้สีหลักไม่เกิน 3 สี", "ส่วนผลการทดลองให้พื้นที่มากที่สุด"] }],
+  "ใบ Peer Review: ช่วยเพื่อนตรวจรายงาน": [
+    { k: "tbl", h: "ตัวอย่างใบ Peer Review", r: [["หัวข้อ", "ความเห็น"], ["รายงานของกลุ่ม", "กลุ่มที่ 3: ผลของชนิดดินต่อความสูงของต้นถั่วเขียว"], ["⭐ จุดเด่นข้อ 1", "ตารางผลการทดลองชัดเจน มีค่าเฉลี่ยและหน่วยครบ"], ["⭐ จุดเด่นข้อ 2", "มีภาพถ่ายต้นถั่วทุกช่วงเวลา ดูแล้วเข้าใจง่าย"], ["💡 คำแนะนำ", "กราฟยังไม่มีชื่อแกน Y ควรเพิ่ม 'ความสูงเฉลี่ย (cm)'"], ["✍️ กลุ่มเจ้าของรายงานตอบ", "ขอบคุณค่ะ จะเพิ่มชื่อแกนและหน่วยในกราฟ"]] },
+    { k: "tip", l: ["ชมก่อน 2 ข้อ แล้วแนะนำ 1 ข้อที่ทำได้จริง", "ใช้คำสุภาพ ไม่ตำหนิตัวบุคคล"] }],
+  "สื่อประกอบการนำเสนอ (Canva / คลิป / QR code)": [
+    { k: "cards", p: [["📱", "คลิปการทดลอง 1 นาที", "ฉากที่ 1 เตรียมดิน 3 ชนิด (10 วิ)\nฉากที่ 2 ปลูกและรดน้ำ (15 วิ)\nฉากที่ 3 ภาพต้นถั่วแต่ละวัน (20 วิ)\nฉากที่ 4 สรุปผล (15 วิ)"],
+      ["🖼️", "อินโฟกราฟิกด้วย Canva", "ชื่อโครงงาน + คำถาม + กราฟผล + สรุป 1 ประโยค\nใส่ชื่อสมาชิกและแหล่งอ้างอิงด้านล่าง"],
+      [SVG_QR, "QR code ติดบนแผงโครงงาน", "สร้าง QR code ลิงก์ไปยังคลิป/อินโฟกราฟิก\nทดสอบสแกนด้วยโทรศัพท์ก่อนติด\n(ภาพนี้เป็นภาพประกอบ สแกนไม่ได้)"]] },
+    { k: "tip", l: ["เลือกทำ 1 อย่างก็พอ แต่ QR code ต้องสแกนแล้วเปิดได้จริง", "ใส่ชื่อสมาชิกและแหล่งอ้างอิงทุกครั้ง"] }],
+  "นำเสนอโครงงานฉบับสมบูรณ์": [
+    { k: "tbl", h: "ตัวอย่างการแบ่งบทพูด 5 นาที", r: [["เวลา", "ผู้พูด", "เนื้อหา"], ["0:00–1:00", "ต้น", "ทักทาย ชื่อโครงงาน ปัญหาและที่มา"], ["1:00–2:00", "ฝน", "คำถาม สมมติฐาน ตัวแปร"], ["2:00–3:00", "ปลา", "วิธีทดลอง (ชี้ภาพบนแผงโครงงาน)"], ["3:00–4:30", "แบม", "ผลการทดลอง ชี้ตารางและกราฟ"], ["4:30–5:00", "ต้น", "สรุปผล ข้อเสนอแนะ ขอบคุณ"]] },
+    { k: "tip", h: "✅ เช็กลิสต์ก่อนนำเสนอ", l: ["รายงานฉบับสมบูรณ์ครบบทที่ 1–5 มีบรรณานุกรม", "แผงโครงงานติดครบทุกส่วน มี QR code", "ซ้อมจับเวลาไม่เกิน 5 นาที ทุกคนได้พูด", "เตรียมคำตอบคำถามที่คาดว่าจะถูกถาม 3 ข้อ"] }],
+};
+
+// ---------- ส่วนหัว ----------
+function renderHeader() {
+  const c = C();
+  document.getElementById("roomSel").innerHTML = S.rooms.map(r => `<option value="${r.id}" ${r.id === c.roomId ? "selected" : ""}>${esc(r.name)}</option>`).join("");
+  document.getElementById("courseSel").innerHTML = roomCourses(c.roomId).map(x => `<option value="${x.id}" ${x.id === c.id ? "selected" : ""}>${esc(x.subject)}</option>`).join("");
+  document.getElementById("nav").innerHTML = TABS.map(([k, t]) => `<button data-tab="${k}" class="${S.tab === k ? "on" : ""}">${t}</button>`).join("");
+}
+document.getElementById("roomSel").onchange = e => {
+  const cs = roomCourses(e.target.value), cur = C();
+  const same = cs.find(x => x.subject === cur.subject);
+  S.cur = (same || cs[0])?.id || S.cur;
+  if (!cs.length) { toast("ห้องนี้ยังไม่มีวิชา — เพิ่มได้ที่แท็บตั้งค่า"); S.tab = "set"; S.pendingRoom = e.target.value; }
+  save(); render();
+};
+document.getElementById("courseSel").onchange = e => { S.cur = e.target.value; save(); render(); };
+document.getElementById("nav").onclick = e => { const t = e.target.dataset.tab; if (t) { S.tab = t; save(); render(); } };
+
+// ---------- กราฟ ----------
+function donut(data) {
+  const tot = data.reduce((a, d) => a + d.v, 0);
+  if (!tot) return `<div class="empty">ยังไม่มีคะแนน</div>`;
+  let a0 = -Math.PI / 2, s = "";
+  const RR = 80, r = 50, cx = 100, cy = 100, p = (rad, a) => `${cx + rad * Math.cos(a)},${cy + rad * Math.sin(a)}`;
+  for (const d of data) {
+    if (!d.v) continue;
+    if (d.v === tot) { s += `<circle cx="${cx}" cy="${cy}" r="${(RR + r) / 2}" fill="none" stroke="${d.c}" stroke-width="${RR - r}"/>`; break; }
+    const a1 = a0 + d.v / tot * Math.PI * 2, big = a1 - a0 > Math.PI ? 1 : 0;
+    s += `<path d="M${p(RR, a0)} A${RR},${RR} 0 ${big} 1 ${p(RR, a1)} L${p(r, a1)} A${r},${r} 0 ${big} 0 ${p(r, a0)}Z" fill="${d.c}"><title>${d.k}: ${d.v} คน</title></path>`;
+    a0 = a1;
+  }
+  return `<svg viewBox="0 0 200 200" style="max-width:220px;display:block;margin:auto">${s}
+    <text x="100" y="98" text-anchor="middle" font-size="26" font-weight="800" fill="#5B2D90">${tot}</text>
+    <text x="100" y="118" text-anchor="middle" font-size="12" fill="#6b6478">คน</text></svg>
+    <div class="legend">${data.filter(d => d.v).map(d => `<span><b style="background:${d.c}"></b>เกรด ${d.k}: ${d.v} (${Math.round(d.v / tot * 100)}%)</span>`).join("")}</div>`;
+}
+function bars(items) {
+  if (!items.some(i => i.v != null)) return `<div class="empty">ยังไม่มีคะแนน</div>`;
+  const W = 48, gap = 12, H = 160, w = items.length * (W + gap) + 30;
+  let s = "";
+  for (const t of [0, 25, 50, 75, 100]) { const y = 10 + H - t / 100 * H; s += `<line x1="28" x2="${w}" y1="${y}" y2="${y}" stroke="#eee"/><text x="22" y="${y + 4}" font-size="10" text-anchor="end" fill="#999">${t}</text>`; }
+  items.forEach((it, i) => {
+    const x = 34 + i * (W + gap), h = (it.v || 0) / 100 * H;
+    s += `<rect x="${x}" y="${10 + H - h}" width="${W}" height="${h}" rx="5" fill="#5B2D90"><title>${esc(it.k)}: ${fmt(it.v)}%</title></rect>
+      <text x="${x + W / 2}" y="${6 + H - h}" font-size="11" text-anchor="middle" fill="#5B2D90" font-weight="700">${it.v == null ? "" : fmt(it.v, 0)}</text>
+      <text x="${x + W / 2}" y="${H + 26}" font-size="10" text-anchor="middle" fill="#555">${esc(it.k.length > 10 ? it.k.slice(0, 10) + "…" : it.k)}</text>`;
+  });
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${w} ${H + 36}" style="min-width:${Math.min(w, 640)}px;width:100%;max-height:240px">${s}</svg></div>`;
+}
+
+// ---------- ภาพรวม ----------
+function rowsOf(c) { return sortedStu(c).map(s => ({ s, a: attStat(c, s.id), sc: scoreStat(c, s.id), g: gradeOf(c, s.id), w: workStat(c, s.id) })); }
+function renderDash(c) {
+  const st = sortedStu(c);
+  if (!st.length) return emptyStu();
+  const rows = rowsOf(c);
+  const pass = rows.filter(r => r.g && r.g !== "ร" && r.g !== "มส" && +r.g >= 1).length;
+  const fail = rows.filter(r => r.g === "มส" || r.g === "0").length;
+  const k = (l, v, bg, fg) => `<div class="kpi" style="background:${bg};color:${fg}"><div class="l">${l}</div><div class="v">${v}</div></div>`;
+  const gd = ["4","3.5","3","2.5","2","1.5","1","0","มส","ร"].map(g => ({ k: g, v: rows.filter(r => r.g === g).length, c: GCOL[g] }));
+  const comp = c.cols.filter(x => x.kind === "in").map(x => ({ k: x.name, v: avg(st.map(s => { const v = colVal(c, s.id, x); return v == null ? null : v / (+x.max || 1) * 100; })) }));
+  rows.forEach(r => r.nb = nbStat(c, r.s.id));
+  const watch = rows.filter(r => (r.a.pct != null && r.a.pct < S.settings.thr + 5) || r.w.no >= 2 || (r.nb.pct != null && r.nb.pct < 50) || r.g === "0" || r.g === "มส");
+  return `
+  ${backupWarn()}
+  <h2>${esc(c.subject)} <span class="chip">${esc(R(c).name)}</span></h2>
+  <div class="kpis">
+    ${k("นักเรียน", st.length + " <small style='font-size:14px'>คน</small>", "var(--pl)", "var(--p)")}
+    ${k("เวลาเรียนเฉลี่ย", avg(rows.map(r => r.a.pct)) == null ? "-" : fmt(avg(rows.map(r => r.a.pct))) + "%", "var(--yl)", "var(--y)")}
+    ${k("คะแนนเฉลี่ย", avg(rows.map(r => r.sc.pct)) == null ? "-" : fmt(avg(rows.map(r => r.sc.pct))) + "%", "var(--gl)", "var(--g)")}
+    ${k("ผ่าน (1 ขึ้นไป)", pass, "var(--bl)", "var(--b)")}
+    ${k("ไม่ผ่าน / มส", fail, "var(--rl)", "var(--r)")}
+    ${NB(c).checks.length ? k("ส่งสมุดเฉลี่ย", fmt(avg(st.map(s => nbStat(c, s.id).pct)), 0) + "%", "#E0F2F1", "#00695C") : ""}
+    ${k("ส่งงานเฉลี่ย", avg(rows.map(r => r.w.pct)) == null ? "-" : fmt(avg(rows.map(r => r.w.pct)), 0) + "%", "var(--ol)", "var(--o)")}
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>สัดส่วนเกรด</h3>${donut(gd)}</div>
+    <div class="card"><h3>คะแนนเฉลี่ยรายช่อง (% ของคะแนนเต็ม)</h3>${bars(comp)}</div>
+  </div>
+  <div class="card"><h3>นักเรียนที่ควรติดตาม</h3>
+    ${watch.length ? `<div class="tw"><table><tr><th class="nm">ชื่อ</th><th>% เวลาเรียน</th><th>งานค้าง</th><th>สมุด</th><th>เกรด</th></tr>
+      ${watch.map(r => `<tr><td class="nm">${esc(r.s.no)}. ${esc(fullName(r.s))}</td>
+        <td class="${r.a.pct != null && r.a.pct < S.settings.thr ? "flagr" : ""}">${r.a.pct == null ? "-" : fmt(r.a.pct) + "%"}</td>
+        <td class="${r.w.no ? "flagr" : ""}">${r.w.no}</td><td class="${r.nb.pct != null && r.nb.pct < 50 ? "flagr" : ""}">${r.nb.pct == null ? "-" : fmt(r.nb.pct, 0) + "%"}</td><td>${gradePill(r.g)}</td></tr>`).join("")}</table></div>`
+      : `<div class="mu">ยังไม่มีนักเรียนที่น่าเป็นห่วง 👍</div>`}
+    <p class="mu" style="margin:10px 0 0">เกณฑ์: เวลาเรียนใกล้หรือต่ำกว่า ${S.settings.thr}% · งานค้างตั้งแต่ 2 ชิ้น · สมุดต่ำกว่า 50% · เกรด 0 หรือ มส  |  เช็กชื่อแล้ว ${Object.keys(c.att).length} ครั้ง · งาน ${c.works.length} ชิ้น</p>
+  </div>
+  <div class="card"><h3>สรุปรายคน</h3><div class="tw"><table>
+    <tr><th>ที่</th><th class="nm">ชื่อ-สกุล</th><th>% เวลาเรียน</th><th>กรอกแล้ว</th><th>คะแนนรวม</th><th>ส่งงาน</th><th>เกรด</th></tr>
+    ${rows.map(r => `<tr><td>${esc(r.s.no)}</td><td class="nm">${esc(fullName(r.s))}</td>
+      <td>${r.a.pct == null ? "-" : fmt(r.a.pct) + "%"}</td><td>${r.sc.filled}/${r.sc.nin}</td><td>${r.sc.sum == null ? "-" : fmt(r.sc.sum, 2)}/${fmt(r.sc.max, 2)}</td>
+      <td>${r.w.pct == null ? "-" : fmt(r.w.pct, 0) + "%"}</td><td>${gradePill(r.g)}</td></tr>`).join("")}
+  </table></div><div class="row noprint" style="margin:12px 0 0"><button class="btn s sm" data-act="csvScore">ส่งออกตามแบบฟอร์มโรงเรียน (CSV/Excel)</button><button class="btn s sm" data-act="print">พิมพ์</button></div></div>`;
+}
+function backupWarn() {
+  const lb = S.lastBackup ? Math.floor((Date.now() - S.lastBackup) / 864e5) : null;
+  if (!storageOK) return `<div class="warn">⚠ เบราว์เซอร์นี้บันทึกข้อมูลไม่ได้ (อาจเปิดแบบไม่ระบุตัวตน) กรุณาสำรองข้อมูลเป็นไฟล์ที่แท็บตั้งค่า</div>`;
+  if (lb == null || lb >= 7) return `<div class="warn noprint">💾 ข้อมูลเก็บไว้ในเบราว์เซอร์เครื่องนี้ ${lb == null ? "ยังไม่เคยสำรองข้อมูล" : "สำรองครั้งล่าสุด " + lb + " วันก่อน"} — <a href="#" data-act="backup">สำรองข้อมูลตอนนี้</a></div>`;
+  return "";
+}
+
+// ---------- ทุกห้อง ----------
+function renderAll() {
+  return `<div class="card"><h2>ภาพรวมทุกห้อง ทุกวิชา</h2><p class="mu">กดชื่อวิชาเพื่อเปิด</p><div class="tw"><table>
+  <tr><th>ห้อง</th><th class="nm">วิชา</th><th>นักเรียน</th><th>กรอกคะแนนครบ</th><th>คะแนนเฉลี่ย</th><th>ผ่าน</th><th>0 / มส</th><th>รอคะแนน (ร)</th><th>เช็กชื่อ</th></tr>
+  ${S.rooms.map(r => roomCourses(r.id).map(c => { const rows = rowsOf(c); return `<tr><td>${esc(r.name)}</td>
+    <td class="nm"><a href="#" data-open="${c.id}">${esc(c.subject)}</a></td><td>${rows.length}</td>
+    <td>${rows.filter(x => x.sc.complete).length}</td><td>${avg(rows.map(x => x.sc.pct)) == null ? "-" : fmt(avg(rows.map(x => x.sc.pct))) + "%"}</td>
+    <td>${rows.filter(x => x.g && !["ร","มส","0"].includes(x.g)).length}</td><td class="${rows.some(x => x.g === "0" || x.g === "มส") ? "flagr" : ""}">${rows.filter(x => x.g === "0" || x.g === "มส").length}</td>
+    <td>${rows.filter(x => x.g === "ร").length}</td><td>${Object.keys(c.att).length} ครั้ง</td></tr>`; }).join("")).join("")}
+  </table></div></div>`;
+}
+
+// ---------- รายชื่อ ----------
+function renderStu(c) {
+  const r = R(c), st = sortedStu(c), others = roomCourses(r.id).filter(x => x.id !== c.id).map(x => x.subject);
+  return `<div class="card"><h2>รายชื่อนักเรียน ${esc(r.name)} <span class="mu">(${st.length} คน)</span></h2>
+  <p class="mu">รายชื่อนี้ใช้ร่วมกันทุกวิชาของห้อง ${esc(r.name)}${others.length ? " (" + others.map(esc).join(", ") + ")" : ""}</p>
+  <div class="tw"><table><tr><th>ที่</th><th>คำนำหน้า</th><th>ชื่อ</th><th>นามสกุล</th><th></th></tr>
+  ${st.map(s => `<tr data-sid="${s.id}">
+    <td><input class="sc" data-f="no" value="${esc(s.no)}" inputmode="numeric" style="width:50px"></td>
+    <td><select class="sc" data-f="prefix" style="width:76px">${["ด.ช.","ด.ญ.","นาย","น.ส.",""].map(p => `<option ${p === s.prefix ? "selected" : ""}>${p}</option>`).join("")}</select></td>
+    <td><input class="tx" data-f="first" value="${esc(s.first)}"></td>
+    <td><input class="tx" data-f="last" value="${esc(s.last)}"></td>
+    <td><button class="btn d sm" data-act="delStu">ลบ</button></td></tr>`).join("")}
+  </table></div>
+  <div class="row" style="margin-top:12px"><button class="btn" data-act="addStu">+ เพิ่มนักเรียน 1 คน</button></div></div>
+  <div class="card"><h3>วางรายชื่อหลายคนพร้อมกัน</h3>
+  <p class="mu">บรรทัดละ 1 คน เช่น <b>เด็กชายภูมิ ใจดี</b> หรือคัดลอกคอลัมน์ ชื่อ / นามสกุล จากไฟล์ Excel ของโรงเรียนมาวางได้เลย</p>
+  <textarea id="bulk" placeholder="เด็กชายภูมิ ใจดี&#10;นางสาวใบเตย สุขสันต์"></textarea>
+  <div class="row" style="margin-top:10px"><button class="btn" data-act="bulkAdd">เพิ่มรายชื่อ</button></div></div>`;
+}
+function parseLine(l) {
+  let t = l.trim().replace(/^\d+[\s.)]+/, ""); if (!t) return null;
+  const cols = t.split("\t").map(x => x.trim()).filter(Boolean);
+  let prefix = "", first = "", last = "";
+  const pre = s => { const m = s.match(/^(ด\.ช\.|ด\.ญ\.|น\.ส\.|เด็กชาย|เด็กหญิง|นางสาว|นาย|นาง)\s*/); if (!m) return ["", s];
+    const map = { "เด็กชาย": "ด.ช.", "เด็กหญิง": "ด.ญ.", "นางสาว": "น.ส." }; return [map[m[1]] || m[1], s.slice(m[0].length)]; };
+  if (cols.length >= 3 && /^(ด\.|น\.|นา|เด็ก)/.test(cols[0]) && cols[0].length <= 8) [prefix, first, last] = [pre(cols[0])[0] || cols[0], cols[1], cols[2]];
+  else if (cols.length >= 2) { [prefix, first] = pre(cols[0]); last = cols.slice(1).join(" "); }
+  else { [prefix, t] = pre(t); const p = t.split(/\s+/); first = p.shift() || ""; last = p.join(" "); }
+  return { prefix, first, last };
+}
+
+// ---------- เช็กชื่อ ----------
+function renderAtt(c) {
+  const st = sortedStu(c); if (!st.length) return emptyStu();
+  const d = S.attDate, day = c.att[d] || {}, dates = Object.keys(c.att).sort().reverse();
+  const done = st.filter(s => day[s.id]).length;
+  const dayCnt = k => st.filter(s => day[s.id] === k).length;
+  const dayPresent = dayCnt("ม") + dayCnt("ส");
+  const stats = st.map(s => attStat(c, s.id));
+  const pctCell = a => `<td class="${a.pct != null && a.pct < S.settings.thr ? "flagr" : ""}">${a.pct == null ? "-" : fmt(a.pct) + "%"}</td>`;
+  const totCell = a => `<td><b>${a.ม + a.ส}</b>/${a.tot}</td>`;
+  const allTot = stats.reduce((t, a) => t + a.tot, 0), allPresent = stats.reduce((t, a) => t + a.ม + a.ส, 0);
+  return `<div class="card"><h2>เช็กชื่อ ${esc(c.subject)} <span class="chip">${esc(R(c).name)}</span></h2>
+  <div class="row"><input type="date" id="attDate" class="tx" style="width:auto" value="${d}">
+    <button class="btn" data-act="allPresent">ทุกคนมา</button>
+    <button class="btn d sm" data-act="clearDay" ${done ? "" : "disabled style='opacity:.5;cursor:default'"}>ล้างวันนี้</button>
+    <span class="mu">บันทึกแล้ว ${done}/${st.length} คน · กดซ้ำเพื่อยกเลิก</span></div>
+  <div class="tw"><table><tr><th>ที่</th><th class="nm">ชื่อ-สกุล</th><th>สถานะ (${thDate(d)})</th><th>รวม<br><small style="font-weight:400">มา/ทั้งหมด</small></th><th>% เวลาเรียน</th></tr>
+  ${st.map((s, i) => `<tr data-sid="${s.id}"><td>${esc(s.no)}</td><td class="nm">${esc(fullName(s))}</td>
+    <td><div class="att">${CODES.map(([k, t]) => `<button title="${t}" data-code="${k}" class="${k} ${day[s.id] === k ? "on" : ""}">${k}</button>`).join("")}</div></td>
+    ${totCell(stats[i])}${pctCell(stats[i])}</tr>`).join("")}
+  <tr class="foot"><th></th><th class="nm">รวมวันที่ ${thDate(d)}</th>
+    <th style="font-weight:600">${CODES.map(([k, t]) => `${t} ${dayCnt(k)}`).join(" · ")}${done < st.length ? ` · ยังไม่เช็ก ${st.length - done}` : ""}</th>
+    <th>${dayPresent}/${done}</th><th>${done ? fmt(dayPresent / done * 100) + "%" : "-"}</th></tr>
+  <tr class="foot"><th></th><th class="nm">รวมทั้งภาคเรียน</th><th style="font-weight:600">เช็กแล้ว ${dates.length} ครั้ง</th>
+    <th>${allPresent}/${allTot}</th><th>${allTot ? fmt(allPresent / allTot * 100) + "%" : "-"}</th></tr>
+  </table></div><p class="mu">ม = มา · ส = สาย (นับเป็นมา) · ล = ลา · ป = ป่วย · ข = ขาด · รวม = จำนวนครั้งที่มาเรียน / จำนวนครั้งที่เช็กในวิชานี้ · ต่ำกว่า ${S.settings.thr}% เกรดจะเป็น มส</p></div>
+  <div class="card"><h3>สรุปเวลาเรียนรายวัน (${dates.length} ครั้ง)</h3>
+  ${dates.length ? `<div class="tw"><table><tr><th class="nm">ชื่อ-สกุล</th><th>รวม<br><small style="font-weight:400">มา/ทั้งหมด</small></th><th>%</th>${dates.map(x => `<th style="font-size:12px"><a href="#" data-day="${x}">${thDate(x)}</a></th>`).join("")}</tr>
+  ${st.map((s, i) => `<tr><td class="nm">${esc(s.no)}. ${esc(fullName(s))}</td>${totCell(stats[i])}${pctCell(stats[i])}
+    ${dates.map(x => { const v = (c.att[x] || {})[s.id] || ""; return `<td style="color:${v === "ข" ? "var(--r)" : v === "ม" ? "var(--g)" : "var(--b)"}">${v}</td>`; }).join("")}</tr>`).join("")}
+  <tr class="foot"><th class="nm">รวม</th><th>${allPresent}/${allTot}</th><th>${allTot ? fmt(allPresent / allTot * 100) + "%" : "-"}</th>
+    ${dates.map(x => { const v = Object.values(c.att[x] || {}); const pr = v.filter(y => y === "ม" || y === "ส").length; return `<th style="font-size:12px" title="มา/บันทึก">${pr}/${v.length}</th>`; }).join("")}</tr>
+  </table></div><p class="mu">แถวรวมใต้วันที่ = จำนวนที่มา (รวมสาย) / จำนวนที่บันทึก · กดวันที่เพื่อเปิดแก้ไขวันนั้น</p>
+  <div class="row" style="margin-top:12px"><button class="btn s sm" data-act="csvAtt">ส่งออกเวลาเรียน (CSV/Excel)</button></div>` : `<div class="mu">ยังไม่มีการเช็กชื่อ</div>`}</div>`;
+}
+
+// ---------- คะแนน ----------
+function cellOut(c, sid, col) { const v = colVal(c, sid, col); return v == null ? "" : fmt(v, 2); }
+function renderScore(c) {
+  const st = sortedStu(c); if (!st.length) return emptyStu();
+  const tc = totalCol(c);
+  const cls = col => col === tc ? "tot" : col.kind === "in" && !nbLinked(c, col) && !wLinked(c, col) ? "" : "sum";
+  return `<div class="card"><h2>บันทึกคะแนน ${esc(c.subject)} <span class="chip">${esc(R(c).name)}</span></h2>
+  <p class="mu">ช่องสีเหลืองกรอกได้ · ช่องสีม่วงคำนวณเอง (📝 จากงาน = กรอกคะแนนที่แท็บงาน/ส่งงาน) · กด Enter เลื่อนลงคนถัดไป · เกรด "ร" = ยังกรอกไม่ครบ${c.cols.some(x => x.kind === "scale") ? " · ช่องคะแนนครูต่างชาติ/คอมพิวเตอร์ กรอกเมื่อได้รับคะแนน" : ""}</p>
+  <div class="tw"><table class="sc"><tr><th>ที่</th><th class="nm">ชื่อ-สกุล</th>${c.cols.map(x => `<th class="${cls(x)}" title="${esc(x.name)}">${esc(x.name)}${nbLinked(c, x) ? "<br>📒 จากตรวจสมุด" : wLinked(c, x) ? "<br>📝 จากงาน" : ""}<small>(${fmt(colMax(c, x), 2)})</small></th>`).join("")}<th class="tot">เกรด</th></tr>
+  ${st.map(s => { const row = c.scores[s.id] || {}; return `<tr data-sid="${s.id}"><td>${esc(s.no)}</td><td class="nm">${esc(fullName(s))}</td>
+    ${c.cols.map(x => x.kind === "in" && !nbLinked(c, x) && !wLinked(c, x) ? `<td><input class="sc" inputmode="decimal" data-cid="${x.id}" data-max="${x.max}" value="${row[x.id] ?? ""}"></td>`
+      : `<td class="${cls(x)}" data-o="${x.id}">${cellOut(c, s.id, x)}</td>`).join("")}
+    <td class="tot" data-o="g">${gradePill(gradeOf(c, s.id))}</td></tr>`; }).join("")}
+  <tr><th></th><th class="nm">ค่าเฉลี่ย</th>${c.cols.map(x => `<th class="${cls(x)}" data-avg="${x.id}">${fmt(avg(st.map(s => colVal(c, s.id, x))), 2)}</th>`).join("")}<th></th></tr>
+  </table></div><div class="row" style="margin-top:12px"><button class="btn s sm" data-act="csvScore">ส่งออกตามแบบฟอร์มโรงเรียน (CSV/Excel)</button></div></div>`;
+}
+function updateScoreRow(c, tr) {
+  const sid = tr.dataset.sid;
+  for (const x of c.cols) if (x.kind !== "in" || nbLinked(c, x) || wLinked(c, x)) { const td = tr.querySelector(`[data-o="${x.id}"]`); if (td) td.textContent = cellOut(c, sid, x); }
+  tr.querySelector('[data-o="g"]').innerHTML = gradePill(gradeOf(c, sid));
+  const st = sortedStu(c);
+  for (const x of c.cols) { const th = main.querySelector(`[data-avg="${x.id}"]`); if (th) th.textContent = fmt(avg(st.map(s => colVal(c, s.id, x))), 2); }
+}
+
+// ---------- งาน/ส่งงาน ----------
+const colLabel = (c, id) => { const x = colById(c, id); return x ? `ช่อง ${c.cols.indexOf(x) + 1}: ${x.name}` : "ยังไม่ใส่ในตารางคะแนน"; };
+const rubSum = w => (w.rub || []).reduce((a, x) => a + (+x[1] || 0), 0);
+function workSheet(c, w, i) {
+  return `<div class="wsheet"><h3>งานที่ ${i + 1}: ${esc(w.name)}</h3>
+    <div class="wmeta"><span>📌 ${esc(colLabel(c, w.col))}</span><span>คะแนนเต็ม ${fmt(w.max, 2)}</span>${w.when ? `<span>🗓 ${esc(w.when)}</span>` : ""}${w.who ? `<span>👤 ${esc(w.who)}</span>` : ""}</div>
+    ${w.topic ? `<div><b>หัวข้อ/เนื้อหา:</b> ${esc(w.topic)}</div>` : ""}
+    ${w.fmt ? `<div><b>รูปแบบงาน:</b> ${esc(w.fmt)}</div>` : ""}
+    ${(w.how || []).length ? `<div style="margin-top:6px"><b>สิ่งที่นักเรียนต้องทำ</b></div><ol>${w.how.map(x => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
+    ${(w.rub || []).length ? `<table><tr><th style="text-align:left">เกณฑ์การให้คะแนน</th><th>คะแนน</th></tr>${w.rub.map(r => `<tr><td>${esc(r[0])}</td><td class="pt">${esc(r[1])}</td></tr>`).join("")}<tr><th style="text-align:left">รวม</th><th>${fmt(rubSum(w), 2)}</th></tr></table>
+      ${Math.abs(rubSum(w) - (+w.max || 0)) > 1e-9 ? `<p class="flagr" style="margin:6px 0 0;font-size:14px">เกณฑ์รวม ${fmt(rubSum(w), 2)} ไม่เท่ากับคะแนนเต็มของงาน ${fmt(w.max, 2)}</p>` : ""}` : ""}
+  </div>`;
+}
+function renderWork(c) {
+  const st = sortedStu(c); if (!st.length) return emptyStu();
+  c.wsc ||= {};
+  if (!c.works.find(w => w.id === S.workSel)) S.workSel = c.works[0]?.id || null;
+  const w = c.works.find(x => x.id === S.workSel), sub = w ? (c.sub[w.id] || {}) : {}, sc = w ? (c.wsc[w.id] || {}) : {};
+  const wi = c.works.indexOf(w);
+  const cnt = k => st.filter(s => sub[s.id] === k).length;
+  const ins = c.cols.filter(x => x.kind === "in" && !nbLinked(c, x));
+  const scored = x => st.filter(s => wScore(c, x, s.id) != null).length;
+  const wavg = x => avg(st.map(s => wScore(c, x, s.id)));
+  return `<div class="card"><h2>งานที่มอบหมาย ${esc(c.subject)} <span class="chip">${esc(R(c).name)}</span></h2>
+  ${c.works.length ? `<div class="tw" style="max-height:none"><table><tr><th>ที่</th><th class="nm">ชื่องาน</th><th>ใส่คะแนนในช่อง</th><th>เต็ม</th><th>กำหนดส่ง</th><th>ส่งแล้ว</th><th>ให้คะแนนแล้ว</th><th>เฉลี่ย</th></tr>
+    ${c.works.map((x, i) => { const sb = c.sub[x.id] || {}, ok = st.filter(s => sb[s.id] === "ok" || sb[s.id] === "late").length;
+      return `<tr style="${x.id === S.workSel ? "background:#F3EEFA" : ""}"><td>${i + 1}</td><td class="nm" style="${x.id === S.workSel ? "background:#F3EEFA" : ""}"><a href="#" data-wopen="${x.id}">${esc(x.name)}</a></td>
+      <td style="font-size:13px">${esc(colLabel(c, x.col))}</td><td>${fmt(x.max, 2)}</td><td style="font-size:13px">${esc(x.when || "")}</td>
+      <td>${ok}/${st.length}</td><td>${scored(x)}/${st.length}</td><td>${wavg(x) == null ? "-" : fmt(wavg(x), 2)}</td></tr>`; }).join("")}
+  </table></div>` : `<div class="empty">ยังไม่มีงาน</div>`}
+  <div class="row noprint" style="margin-top:12px"><button class="btn" data-act="addWork">+ เพิ่มงานเอง</button>
+    ${c.works.length ? `<button class="btn s" data-act="printWorks">🖨 พิมพ์ใบสั่งงานให้นักเรียน</button><button class="btn s" data-act="printWorksEx">🖨 พิมพ์ใบสั่งงาน + ตัวอย่างทุกงาน</button>` : ""}
+    ${WPLAN[planKey(c)] ? `<button class="btn s sm" data-act="replan">ใส่งานที่แนะนำของวิชานี้ (ที่ยังไม่มี)</button>` : ""}</div>
+  <p class="mu">กดชื่องานเพื่อเปิดใบงานและกรอกคะแนน · คะแนนงานจะไปคำนวณในช่องคะแนนที่ผูกไว้ให้เอง (ช่องนั้นในแท็บคะแนนจะเป็นสีม่วง 📝) · ถ้าช่องเดียวมีหลายงาน ใช้ค่าเฉลี่ยร้อยละของงานเหล่านั้น</p></div>
+  ${w ? `<div class="card"><h2>${esc(w.name)}</h2>
+  ${workSheet(c, w, wi)}
+  ${exHTML(w) ? `<div class="exbox"><h3>👀 ตัวอย่างผลงาน (แนวทางให้นักเรียนดู) <span class="row noprint" style="margin:0"><button class="btn s sm" data-act="exFull">🔍 เปิดเต็มจอ (ฉายให้นักเรียนดู)</button><button class="btn s sm" data-act="printEx">🖨 พิมพ์ใบงานนี้พร้อมตัวอย่าง</button></span></h3>${exHTML(w)}</div>` : ""}
+  <details class="wedit"><summary>✏️ แก้ไขรายละเอียดงาน</summary>
+    <div class="grid2" style="margin-top:10px">
+      <label>ชื่องาน<input class="tx" data-w="name" value="${esc(w.name)}"></label>
+      <label>ใส่คะแนนลงช่อง<select class="tx" data-w="col"><option value="">— ไม่ใส่ในตารางคะแนน (เช็กส่งอย่างเดียว) —</option>${ins.map(x => `<option value="${x.id}" ${x.id === w.col ? "selected" : ""}>ช่อง ${c.cols.indexOf(x) + 1}: ${esc(x.name)} (เต็ม ${x.max})</option>`).join("")}</select></label>
+      <label>คะแนนเต็มของงาน<input class="tx" data-w="max" inputmode="decimal" value="${esc(w.max)}"></label>
+      <label>กำหนดสั่ง/ส่ง<input class="tx" data-w="when" value="${esc(w.when || "")}"></label>
+      <label>หัวข้อ/เนื้อหา<input class="tx" data-w="topic" value="${esc(w.topic || "")}"></label>
+      <label>ทำแบบ (เดี่ยว/กลุ่ม)<input class="tx" data-w="who" value="${esc(w.who || "")}"></label>
+    </div>
+    <label>รูปแบบงาน<input class="tx" data-w="fmt" value="${esc(w.fmt || "")}"></label>
+    <label>สิ่งที่นักเรียนต้องทำ (บรรทัดละ 1 ข้อ)<textarea data-w="how">${esc((w.how || []).join("\n"))}</textarea></label>
+    <label>เกณฑ์การให้คะแนน (บรรทัดละ 1 ข้อ เช่น <b>เนื้อหาถูกต้อง = 2</b>)<textarea data-w="rub">${esc((w.rub || []).map(r => `${r[0]} = ${r[1]}`).join("\n"))}</textarea></label>
+    <div class="row"><button class="btn d sm" data-act="delWork" style="margin-left:auto">ลบงานนี้</button></div>
+  </details></div>
+  <div class="card"><h3>กรอกคะแนน: ${esc(w.name)} <span class="mu">(เต็ม ${fmt(w.max, 2)})</span></h3>
+  <div class="row"><button class="btn s sm" data-act="allOk">ทุกคนส่งแล้ว</button>
+    <span class="mu">ส่งแล้ว ${cnt("ok")} · ส่งช้า ${cnt("late")} · ยังไม่ส่ง ${cnt("no")} · ยังไม่บันทึก ${st.length - cnt("ok") - cnt("late") - cnt("no")}</span></div>
+  <div class="tw"><table><tr><th>ที่</th><th class="nm">ชื่อ-สกุล</th><th>สถานะ</th><th>คะแนน<br><small style="font-weight:400">เต็ม ${fmt(w.max, 2)}</small></th><th>ค้างรวม</th><th>% ส่งงานทั้งหมด</th></tr>
+  ${st.map(s => { const v = sub[s.id], ws = workStat(c, s.id); return `<tr data-sid="${s.id}"><td>${esc(s.no)}</td><td class="nm">${esc(fullName(s))}</td>
+    <td><button class="st ${v || ""}" data-act="cycle">${v ? WST[v] : "—"}</button></td>
+    <td><input class="sc ws" inputmode="decimal" data-ws="${w.id}" data-max="${w.max}" value="${sc[s.id] ?? ""}"></td>
+    <td class="${ws.no ? "flagr" : ""}">${ws.no}</td>
+    <td><div style="display:flex;gap:8px;align-items:center;justify-content:center"><div class="bar"><i style="width:${ws.pct || 0}%"></i></div>${ws.pct == null ? "-" : fmt(ws.pct, 0) + "%"}</div></td></tr>`; }).join("")}
+  </table></div>
+  <p class="mu">กรอกคะแนนแล้วสถานะเป็น "ส่งแล้ว" ให้เอง (เปลี่ยนเป็นส่งช้าได้โดยกดปุ่มสถานะ) · กด Enter เลื่อนลงคนถัดไป · ถ้าสถานะ "ยังไม่ส่ง" และไม่มีคะแนน ช่องคะแนนจะนับเป็น 0</p></div>` : ""}
+  ${c.works.length ? `<div class="card"><h3>ภาพรวมงานทั้งหมด</h3><div class="tw"><table><tr><th class="nm">ชื่อ-สกุล</th>${c.works.map((x, i) => `<th title="${esc(x.name)}">งาน ${i + 1}<br><small style="font-weight:400">เต็ม ${fmt(x.max, 2)}</small></th>`).join("")}<th>ค้าง</th></tr>
+    ${st.map(s => `<tr><td class="nm">${esc(s.no)}. ${esc(fullName(s))}</td>${c.works.map(x => { const v = (c.sub[x.id] || {})[s.id], p = wScore(c, x, s.id);
+      return `<td style="color:${v === "no" ? "var(--r)" : v === "late" ? "var(--y)" : "var(--g)"};font-weight:700">${p != null ? fmt(p, 2) + (v === "late" ? " (ช้า)" : "") : v === "ok" ? "✓" : v === "late" ? "ช้า" : v === "no" ? "✗" : ""}</td>`; }).join("")}<td class="${workStat(c, s.id).no ? "flagr" : ""}">${workStat(c, s.id).no}</td></tr>`).join("")}
+  </table></div><p class="mu">ตัวเลข = คะแนนที่ได้ · ✓ ส่งแล้วแต่ยังไม่ให้คะแนน · ✗ ยังไม่ส่ง</p>
+  <div class="row" style="margin-top:12px"><button class="btn s sm" data-act="csvWork">ส่งออกงานและคะแนน (CSV/Excel)</button></div></div>` : ""}`;
+}
+function updateWorkRow(c, tr) {
+  const sid = tr.dataset.sid, w = c.works.find(x => x.id === S.workSel); if (!w) return;
+  const v = (c.sub[w.id] || {})[sid], b = tr.querySelector(".st"), ws = workStat(c, sid);
+  b.className = "st " + (v || ""); b.textContent = v ? WST[v] : "—";
+  tr.children[4].textContent = ws.no; tr.children[4].className = ws.no ? "flagr" : "";
+  tr.children[5].innerHTML = `<div style="display:flex;gap:8px;align-items:center;justify-content:center"><div class="bar"><i style="width:${ws.pct || 0}%"></i></div>${ws.pct == null ? "-" : fmt(ws.pct, 0) + "%"}</div>`;
+}
+function printWorks(c, only, withEx) {
+  const s = S.settings, r = R(c);
+  document.getElementById("printArea").innerHTML = `<h1>ใบสั่งงาน วิชา${esc(c.subject)} ${esc(r.name)}</h1>
+    <p style="margin:0 0 10px">${esc(s.school)} · ภาคเรียนที่ ${esc(s.term)} · ครูผู้สอน ${esc(s.teacher)}</p>
+    ${c.works.map((w, i) => only && w !== only ? "" : `<div class="pw1"><h2>งานที่ ${i + 1}: ${esc(w.name)} (${fmt(w.max, 2)} คะแนน)</h2>
+      <div>${w.when ? `<b>กำหนด:</b> ${esc(w.when)} · ` : ""}${w.who ? `<b>ทำแบบ:</b> ${esc(w.who)}` : ""}</div>
+      ${w.topic ? `<div><b>หัวข้อ/เนื้อหา:</b> ${esc(w.topic)}</div>` : ""}${w.fmt ? `<div><b>รูปแบบงาน:</b> ${esc(w.fmt)}</div>` : ""}
+      ${(w.how || []).length ? `<ol>${w.how.map(x => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
+      ${(w.rub || []).length ? `<table><tr><th>เกณฑ์การให้คะแนน</th><th>คะแนน</th></tr>${w.rub.map(x => `<tr><td>${esc(x[0])}</td><td style="text-align:center">${esc(x[1])}</td></tr>`).join("")}</table>` : ""}${withEx && exHTML(w) ? `<div class="exbox"><h3>ตัวอย่างผลงาน</h3>${exHTML(w)}</div>` : ""}</div>`).join("")}`;
+  document.body.classList.add("pw");
+  const off = () => { document.body.classList.remove("pw"); window.removeEventListener("afterprint", off); };
+  window.addEventListener("afterprint", off);
+  try { window.print(); } catch (e) {}
+  setTimeout(() => { if (!matchMedia("print").matches) off(); }, 1500);
+}
+const parseRub = t => t.split(/\n/).map(l => l.trim()).filter(Boolean).map(l => { const m = l.match(/^(.*?)[\s=:|\-–]*([\d.]+)\s*(คะแนน)?$/); return m ? [m[1].trim() || l, +m[2]] : [l, 0]; });
+
+// ---------- ตรวจสมุด ----------
+function renderNb(c) {
+  const st = sortedStu(c); if (!st.length) return emptyStu();
+  const nb = NB(c);
+  if (!nb.checks.find(k => k.id === S.nbSel)) S.nbSel = nb.checks[nb.checks.length - 1]?.id || null;
+  const k = nb.checks.find(x => x.id === S.nbSel), mk = k ? (nb.marks[k.id] || {}) : {};
+  const ins = c.cols.filter(x => x.kind === "in" && (x.id === nb.link || !wLinked(c, x))), link = ins.find(x => x.id === nb.link), max = nbMax(c);
+  const cnt = key => st.filter(s => (mk[s.id] || {})[key]).length;
+  const stats = st.map(s => nbStat(c, s.id));
+  const pctCell = p => `<td class="${p != null && p < 50 ? "flagr" : ""}">${p == null ? "-" : fmt(p, 0) + "%"}</td>`;
+  return `<div class="card"><h2>ตรวจสมุด ${esc(c.subject)} <span class="chip">${esc(R(c).name)}</span></h2>
+  <div class="row"><select id="nbSel" class="tx" style="width:auto;min-width:200px">${nb.checks.map(x => `<option value="${x.id}" ${x.id === S.nbSel ? "selected" : ""}>${thDate(x.date)} · ${esc(x.title)}</option>`).join("") || "<option>— ยังไม่มีวันตรวจ —</option>"}</select>
+    <button class="btn" data-act="addNb">+ เพิ่มวันตรวจสมุด</button></div>
+  ${k ? `<div class="row"><label class="mu">วันที่ตรวจ <input type="date" id="nbDate" class="tx" style="width:auto" value="${k.date}"></label>
+    <label class="mu">ชื่อครั้ง <input id="nbTitle" class="tx" style="width:200px" value="${esc(k.title)}"></label>
+    <button class="btn s sm" data-act="nbAll">ทุกคนส่งครบ</button><button class="btn s sm" data-act="nbClear">ล้างครั้งนี้</button><button class="btn d sm" data-act="delNb">ลบครั้งนี้</button></div>
+  <p class="mu">กดช่องเพื่อติ๊ก/ยกเลิก · ติ๊กข้ออื่นจะติ๊ก "ส่งสมุด" ให้เอง · เอาติ๊ก "ส่งสมุด" ออกจะล้างทั้งแถว · "ทุกคนส่งครบ" ติ๊กครบ 4 ช่องให้คนที่ยังไม่ได้ตรวจ แล้วค่อยเอาติ๊กออกเฉพาะคนที่ขาด</p>
+  <div class="tw"><table><tr><th>ที่</th><th class="nm">ชื่อ-สกุล</th>${NBK.map(([, t]) => `<th>${t}</th>`).join("")}<th>ครั้งนี้</th><th>รวมทุกครั้ง</th><th>%</th><th>คะแนนสมุด<br><small style="font-weight:400">เต็ม ${fmt(max, 2)}</small></th></tr>
+  ${st.map((s, i) => { const m = mk[s.id] || {}, a = stats[i], n = NBK.filter(([x]) => m[x]).length; return `<tr data-sid="${s.id}"><td>${esc(s.no)}</td><td class="nm">${esc(fullName(s))}</td>
+    ${NBK.map(([x, t]) => `<td><button class="tick ${m[x] ? "on" : ""}" data-nbk="${x}" title="${t}">${m[x] ? "✓" : ""}</button></td>`).join("")}
+    <td class="${m.s ? "" : "flagr"}">${m.s ? n + "/" + NBK.length : "ไม่ส่ง"}</td><td><b>${a.got}</b>/${a.poss}</td>${pctCell(a.pct)}<td><b>${a.pct == null ? "-" : fmt(a.pct / 100 * max, 2)}</b></td></tr>`; }).join("")}
+  <tr class="foot"><th></th><th class="nm">รวมครั้งนี้</th>${NBK.map(([x]) => `<th>${cnt(x)}/${st.length}</th>`).join("")}<th></th><th></th><th></th><th></th></tr>
+  </table></div>` : `<div class="empty">กด "+ เพิ่มวันตรวจสมุด" เพื่อเริ่มตรวจ</div>`}</div>
+  <div class="card"><h3>คะแนนจากการตรวจสมุด</h3>
+  <p class="mu">ตรวจแต่ละครั้งได้สูงสุด ${NBK.length} ติ๊ก (${NBK.map(([, t]) => t).join(" · ")} อย่างละ 1) · คะแนนสมุด = ติ๊กที่ได้ทั้งหมด ÷ ติ๊กสูงสุดทุกครั้ง × คะแนนเต็ม</p>
+  <div class="grid2"><label>ใส่คะแนนสมุดลงในช่องคะแนน
+    <select class="tx" id="nbLink"><option value="">— ยังไม่ใส่ในตารางคะแนน —</option>${ins.map(x => `<option value="${x.id}" ${x.id === nb.link ? "selected" : ""}>ช่อง ${c.cols.indexOf(x) + 1}: ${esc(x.name)} (เต็ม ${x.max})</option>`).join("")}</select></label>
+    ${link ? `<div class="mu" style="align-self:end">คะแนนเต็มใช้ตามช่อง "${esc(link.name)}" = ${link.max} คะแนน · ช่องนี้ในแท็บคะแนนจะคำนวณให้เอง ไม่ต้องกรอก</div>`
+      : `<label>คะแนนเต็มของสมุด<input class="sc" id="nbMax" inputmode="decimal" value="${nb.max}" style="width:80px;display:block"></label>`}</div>
+  <p class="mu">ถ้ายังไม่มีช่องสำหรับสมุด เพิ่มช่องได้ที่แท็บตั้งค่า (เช่น "ส่งสมุด" 5 คะแนน) แล้วกลับมาเลือกที่นี่ · ถ้าเพิ่มช่องใหม่ คะแนนเต็มรวมของวิชาจะเพิ่มขึ้นด้วย หากต้องการให้รวมยังเป็น 100 ให้ลดคะแนนเต็มช่องอื่นลง หรือเลือกใช้ช่องเดิมที่มีอยู่</p></div>
+  ${nb.checks.length ? `<div class="card"><h3>สรุปการส่งสมุดทุกครั้ง (${nb.checks.length} ครั้ง)</h3><div class="tw"><table><tr><th class="nm">ชื่อ-สกุล</th><th>ส่ง (ครั้ง)</th><th>รวมติ๊ก</th><th>%</th><th>คะแนน (${fmt(max, 2)})</th>${[...nb.checks].reverse().map(x => `<th style="font-size:12px"><a href="#" data-nbopen="${x.id}">${thDate(x.date)}</a></th>`).join("")}</tr>
+    ${st.map((s, i) => { const a = stats[i]; return `<tr><td class="nm">${esc(s.no)}. ${esc(fullName(s))}</td><td class="${a.sent < a.n ? "flagr" : ""}">${a.sent}/${a.n}</td><td>${a.got}/${a.poss}</td>${pctCell(a.pct)}<td><b>${a.pct == null ? "-" : fmt(a.pct / 100 * max, 2)}</b></td>
+      ${[...nb.checks].reverse().map(x => { const m = (nb.marks[x.id] || {})[s.id] || {}, n = NBK.filter(([y]) => m[y]).length; return `<td style="color:${!m.s ? "var(--r)" : n === NBK.length ? "var(--g)" : "var(--y)"};font-weight:700">${m.s ? n + "/" + NBK.length : "✗"}</td>`; }).join("")}</tr>`; }).join("")}
+    <tr class="foot"><th class="nm">ส่งสมุด</th><th></th><th></th><th></th><th></th>${[...nb.checks].reverse().map(x => `<th style="font-size:12px">${st.filter(s => ((nb.marks[x.id] || {})[s.id] || {}).s).length}/${st.length}</th>`).join("")}</tr>
+  </table></div><p class="mu">✗ = ไม่ส่ง · กดวันที่เพื่อเปิดแก้ไขครั้งนั้น</p>
+  <div class="row" style="margin-top:12px"><button class="btn s sm" data-act="csvNb">ส่งออกการตรวจสมุด (CSV/Excel)</button></div></div>` : ""}`;
+}
+
+// ---------- ตั้งค่า ----------
+function renderSet(c) {
+  const s = S.settings, r = R(c), sums = c.cols.filter(x => x.kind === "sum");
+  const roomForNew = S.pendingRoom || c.roomId;
+  return `<div class="card"><h2>เพิ่มวิชา / เพิ่มห้อง</h2>
+  <div class="grid2">
+    <div><h3>เพิ่มวิชาให้ห้อง</h3>
+      <label>ห้อง<select class="tx" id="ncRoom">${S.rooms.map(x => `<option value="${x.id}" ${x.id === roomForNew ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>
+      <label>ชื่อวิชา<input class="tx" id="ncName" placeholder="เช่น โลก ดาราศาสตร์ และอวกาศ"></label>
+      <label>รูปแบบช่องคะแนน<select class="tx" id="ncTpl"><option value="">แบบง่าย (หน่วย 1–5 + กลางภาค + ปลายภาค)</option>
+        ${S.courses.map(x => `<option value="${x.id}">เหมือน ${esc(x.subject)} ${esc(R(x).name)}</option>`).join("")}</select></label>
+      <div class="row" style="margin-top:10px"><button class="btn" data-act="addCourse">+ เพิ่มวิชา</button></div></div>
+    <div><h3>เพิ่มห้องใหม่</h3>
+      <label>ชื่อห้อง<input class="tx" id="nrName" placeholder="เช่น ม.4/2"></label>
+      <p class="mu">สร้างห้องแล้วไปวางรายชื่อที่แท็บรายชื่อ จากนั้นเพิ่มวิชาให้ห้องนั้นทางซ้าย</p>
+      <div class="row"><button class="btn" data-act="addRoom">+ เพิ่มห้อง</button></div></div>
+  </div></div>
+  <div class="card"><h2>วิชา ${esc(c.subject)} <span class="chip">${esc(r.name)}</span></h2>
+  <div class="grid2"><label>ชื่อวิชา<input class="tx" data-course="subject" value="${esc(c.subject)}"></label>
+    <label>ชื่อห้อง<input class="tx" data-room="name" value="${esc(r.name)}"></label></div>
+  <h3 style="margin-top:16px">ช่องคะแนน</h3>
+  <p class="mu">แก้ชื่อและคะแนนเต็มได้ · ช่อง "รวม" คำนวณคะแนนเต็มให้เอง · "คะแนนครูไทย" = คะแนนรวมของครู ย่อส่วนให้เหลือคะแนนเต็มที่กำหนด</p>
+  <div class="tw"><table><tr><th>ลำดับ</th><th style="text-align:left">ชื่อช่อง</th><th>ประเภท</th><th>คะแนนเต็ม</th><th>รวมจาก</th><th></th></tr>
+  ${c.cols.map((x, i) => `<tr data-cid="${x.id}"><td>${i + 1}</td><td><input class="tx" data-col="name" value="${esc(x.name)}" style="min-width:200px"></td>
+    <td>${x.kind === "in" ? "กรอกคะแนน" : x.kind === "sum" ? "รวม (อัตโนมัติ)" : "ย่อส่วน"}</td>
+    <td>${x.kind === "sum" ? fmt(colMax(c, x), 2) : `<input class="sc" data-col="max" inputmode="decimal" value="${x.max}">`}</td>
+    <td class="mu" style="white-space:normal;font-size:12px">${x.kind === "in" ? "" : x.src.map(id => c.cols.findIndex(y => y.id === id) + 1).join(", ")}</td>
+    <td>${x.kind === "in" ? `<button class="btn d sm" data-act="delCol">ลบ</button>` : ""}</td></tr>`).join("")}
+  </table></div>
+  ${sums.length ? `<div class="row" style="margin-top:10px"><input class="tx" id="ncolName" placeholder="ชื่อช่องใหม่" style="max-width:220px"><input class="sc" id="ncolMax" placeholder="เต็ม" value="5">
+    <span class="mu">ใส่ไว้ในกลุ่ม</span><select class="tx" id="ncolGrp" style="width:auto">${sums.map(x => `<option value="${x.id}">ช่อง ${c.cols.indexOf(x) + 1} ${esc(x.name)}</option>`).join("")}</select>
+    <button class="btn s sm" data-act="addCol">+ เพิ่มช่อง</button></div>` : ""}
+  <div class="row" style="margin-top:10px"><button class="btn d sm" data-act="delCourse" style="margin-left:auto">ลบวิชานี้</button><button class="btn d sm" data-act="delRoom">ลบห้องนี้ทั้งห้อง</button></div></div>
+  <div class="card"><h2>ข้อมูลทั่วไป</h2>
+  <div class="grid2">
+    <label>โรงเรียน<input class="tx" data-set="school" value="${esc(s.school)}"></label>
+    <label>ครูผู้สอน<input class="tx" data-set="teacher" value="${esc(s.teacher)}"></label>
+    <label>ภาคเรียน/ปีการศึกษา<input class="tx" data-set="term" value="${esc(s.term)}"></label>
+    <label>เกณฑ์เวลาเรียนขั้นต่ำ (%)<input class="tx" data-set="thr" inputmode="numeric" value="${s.thr}"></label>
+  </div>
+  <h3 style="margin-top:16px">เกณฑ์ตัดเกรด (ใช้ทุกวิชา)</h3>
+  <div class="tw" style="max-width:320px"><table><tr><th>ร้อยละตั้งแต่</th><th>เกรด</th></tr>
+  ${s.criteria.map((x, i) => `<tr data-ci="${i}"><td><input class="sc" data-crit="0" value="${x[0]}"></td><td><input class="sc" data-crit="1" value="${x[1]}"></td></tr>`).join("")}</table></div></div>
+  <div class="card"><h2>สำรอง / ย้ายข้อมูล</h2>
+  <p class="mu">ข้อมูลเก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ควรสำรองเป็นไฟล์สัปดาห์ละครั้ง และใช้ไฟล์สำรองย้ายข้อมูลไปเครื่องอื่นได้</p>
+  <div class="row"><button class="btn" data-act="backup">💾 สำรองข้อมูล (ไฟล์ .json)</button>
+    <label class="btn s" style="cursor:pointer">📂 นำเข้าไฟล์สำรอง<input type="file" id="restore" accept=".json,application/json" hidden></label>
+    <button class="btn d" data-act="reset" style="margin-left:auto">เริ่มใหม่ทั้งหมด</button></div>
+  <p class="mu">${S.lastBackup ? "สำรองล่าสุด " + new Date(S.lastBackup).toLocaleString("th-TH") : "ยังไม่เคยสำรองข้อมูล"}</p></div>`;
+}
+const emptyStu = () => `<div class="card empty">ห้องนี้ยังไม่มีรายชื่อนักเรียน<br><br><button class="btn" data-go="stu">เพิ่มรายชื่อ</button></div>`;
+
+// ---------- render ----------
+const main = document.getElementById("main");
+function render() {
+  renderHeader();
+  const c = C();
+  const keep = [...main.querySelectorAll(".tw")].map(x => [x.scrollTop, x.scrollLeft]);
+  main.innerHTML = { dash: renderDash, stu: renderStu, att: renderAtt, score: renderScore, work: renderWork, nb: renderNb, all: renderAll, set: renderSet }[S.tab](c);
+  delete S.pendingRoom;
+  if (S.tab === S._lastTab) main.querySelectorAll(".tw").forEach((x, i) => { if (keep[i]) [x.scrollTop, x.scrollLeft] = keep[i]; });
+  S._lastTab = S.tab;
+}
+
+// ---------- ไฟล์ ----------
+function download(name, text, type) {
+  const b = new Blob([text], { type }), a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function csv(name, rows) {
+  const t = "﻿" + rows.map(r => r.map(v => { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; }).join(",")).join("\r\n");
+  download(name, t, "text/csv;charset=utf-8");
+}
+const fn = (c, k) => `${k}_${c.subject}_${R(c).name}_${today()}.csv`.replace(/[\\/:*?"<>|]/g, "-");
+
+// ---------- events ----------
+main.addEventListener("click", e => {
+  const c = C(), t = e.target.closest("[data-act],[data-go],[data-code],[data-open],[data-day],[data-nbk],[data-nbopen],[data-wopen]"); if (!t) return;
+  if (t.dataset.wopen) { e.preventDefault(); S.workSel = t.dataset.wopen; save(); render(); const h = main.querySelectorAll(".card")[1]; if (h) h.scrollIntoView({ behavior: "smooth" }); return; }
+  if (t.dataset.nbopen) { e.preventDefault(); S.nbSel = t.dataset.nbopen; save(); render(); return window.scrollTo({ top: 0, behavior: "smooth" }); }
+  if (t.dataset.day) { e.preventDefault(); S.attDate = t.dataset.day; save(); render(); return window.scrollTo({ top: 0, behavior: "smooth" }); }
+  if (t.dataset.open) { e.preventDefault(); S.cur = t.dataset.open; S.tab = "score"; save(); return render(); }
+  if (t.dataset.go) { S.tab = t.dataset.go; save(); return render(); }
+  const tr = t.closest("tr"), sid = tr?.dataset.sid, room = R(c);
+  if (t.dataset.code) {
+    const day = c.att[S.attDate] ||= {};
+    if (day[sid] === t.dataset.code) delete day[sid]; else day[sid] = t.dataset.code;
+    if (!Object.keys(day).length) delete c.att[S.attDate];
+    save(); return render();
+  }
+  if (t.dataset.nbk) {
+    const mk = NB(c).marks[S.nbSel] ||= {}, m = mk[sid] ||= {}, k = t.dataset.nbk;
+    if (m[k]) { delete m[k]; if (k === "s") NBK.forEach(([x]) => delete m[x]); } else { m[k] = 1; m.s = 1; }
+    if (!Object.keys(m).length) delete mk[sid];
+    save(); return render();
+  }
+  const a = t.dataset.act; e.preventDefault();
+  const val = id => document.getElementById(id)?.value.trim();
+  const act = {
+    addStu() { const no = Math.max(0, ...room.students.map(s => +s.no || 0)) + 1; room.students.push({ id: uid(), no, prefix: "", first: "", last: "" }); },
+    async delStu() { const s = room.students.find(x => x.id === sid); if (!await ask(`ลบ ${fullName(s) || "นักเรียนคนนี้"} ออกจากห้อง ${room.name} และข้อมูลทุกวิชาของเขา?`)) return false;
+      room.students = room.students.filter(x => x.id !== sid); roomCourses(room.id).forEach(x => delete x.scores[sid]); },
+    bulkAdd() { const ls = document.getElementById("bulk").value.split(/\n/).map(parseLine).filter(Boolean); let no = Math.max(0, ...room.students.map(s => +s.no || 0));
+      ls.forEach(p => room.students.push({ id: uid(), no: ++no, ...p })); toast(`เพิ่ม ${ls.length} คน`); },
+    allPresent() { const day = c.att[S.attDate] ||= {}; room.students.forEach(s => { if (!day[s.id]) day[s.id] = "ม"; }); toast("บันทึกทุกคนมา (คนที่บันทึกไว้แล้วไม่เปลี่ยน)"); },
+    async clearDay() { if (!await ask("ล้างการเช็กชื่อของวันที่เลือก?")) return false; delete c.att[S.attDate]; },
+    async addWork() { const n = await askText("ชื่องาน", `งานที่ ${c.works.length + 1}`); if (!n) return false; const w = { id: uid(), name: n.trim(), col: null, max: 10, topic: "", fmt: "", who: "", when: "", how: [], rub: [] }; c.works.push(w); S.workSel = w.id; toast("เพิ่มงานแล้ว — กด ✏️ แก้ไขรายละเอียดงาน เพื่อเลือกช่องคะแนน"); },
+    async renWork() { const w = c.works.find(x => x.id === S.workSel); const n = await askText("ชื่องานใหม่", w.name); if (!n) return false; w.name = n.trim(); },
+    async delWork() { if (!await ask("ลบงานนี้และสถานะการส่งทั้งหมด?")) return false; c.works = c.works.filter(x => x.id !== S.workSel); delete c.sub[S.workSel]; delete (c.wsc || {})[S.workSel]; S.workSel = null; },
+    replan() { const n = applyPlan(c); toast(n ? `เพิ่มงาน ${n} ชิ้น` : "มีงานที่แนะนำครบแล้ว"); if (!n) return false; },
+    printWorks() { printWorks(c); return false; },
+    printWorksEx() { printWorks(c, null, true); return false; },
+    printEx() { printWorks(c, c.works.find(x => x.id === S.workSel), true); return false; },
+    exFull() { const w = c.works.find(x => x.id === S.workSel); const d = document.createElement("div"); d.className = "exfull";
+      d.innerHTML = `<div class="in"><div class="row" style="justify-content:space-between"><h2 style="margin:0">ตัวอย่างผลงาน: ${esc(w.name)}</h2><button class="btn" data-x="1">✕ ปิด</button></div>${exHTML(w)}</div>`;
+      const close = () => { d.remove(); document.removeEventListener("keydown", k, true); }, k = e => { if (e.key === "Escape") close(); };
+      d.addEventListener("click", e => { if (e.target.closest("[data-x]")) close(); }); document.addEventListener("keydown", k, true); document.body.appendChild(d); return false; },
+    addNb() { const nb = NB(c), k = { id: uid(), date: today(), title: `ครั้งที่ ${nb.checks.length + 1}` }; nb.checks.push(k); nb.checks.sort((x, y) => x.date.localeCompare(y.date)); S.nbSel = k.id; toast("เพิ่มวันตรวจสมุด " + thDate(k.date)); },
+    nbAll() { const mk = NB(c).marks[S.nbSel] ||= {}; room.students.forEach(s => { if (!mk[s.id]) mk[s.id] = Object.fromEntries(NBK.map(([x]) => [x, 1])); }); },
+    async nbClear() { if (!await ask("ล้างการติ๊กของการตรวจสมุดครั้งนี้?")) return false; delete NB(c).marks[S.nbSel]; },
+    async delNb() { const nb = NB(c); if (!await ask("ลบวันตรวจสมุดครั้งนี้และการติ๊กทั้งหมด?")) return false; nb.checks = nb.checks.filter(x => x.id !== S.nbSel); delete nb.marks[S.nbSel]; S.nbSel = null; },
+    csvNb() { const nb = NB(c), mx = nbMax(c); csv(fn(c, "ตรวจสมุด"), [["ที่", "ชื่อ-สกุล", ...nb.checks.map(k => `${thDate(k.date)} ${k.title} (${NBK.length})`), "ส่ง (ครั้ง)", "รวมติ๊ก", "%", `คะแนนสมุด (${mx})`],
+      ...sortedStu(c).map(s => { const a = nbStat(c, s.id); return [s.no, fullName(s), ...nb.checks.map(k => { const m = (nb.marks[k.id] || {})[s.id] || {}; return m.s ? NBK.filter(([x]) => m[x]).length : "ไม่ส่ง"; }), `${a.sent}/${a.n}`, `${a.got}/${a.poss}`, a.pct == null ? "" : fmt(a.pct, 0), a.pct == null ? "" : fmt(a.pct / 100 * mx, 2)]; })]); return false; },
+    allOk() { const sub = c.sub[S.workSel] ||= {}; room.students.forEach(s => { if (!sub[s.id]) sub[s.id] = "ok"; }); },
+    cycle() { const sub = c.sub[S.workSel] ||= {}; const order = [undefined, "ok", "late", "no"]; const nx = order[(order.indexOf(sub[sid]) + 1) % 4]; if (nx) sub[sid] = nx; else delete sub[sid]; },
+    addCourse() { const n = val("ncName"), rid = val("ncRoom"); if (!n) { toast("ใส่ชื่อวิชาก่อน"); return false; }
+      if (roomCourses(rid).some(x => x.subject === n)) { toast("ห้องนี้มีวิชานี้แล้ว"); return false; }
+      const tpl = S.courses.find(x => x.id === val("ncTpl"));
+      const nc = newCourse(rid, n, tpl ? JSON.parse(JSON.stringify(tpl.cols)) : null); S.courses.push(nc); S.cur = nc.id; S.tab = "score";
+      toast(`เพิ่มวิชา ${n} ให้ ${S.rooms.find(x => x.id === rid).name}`); },
+    addRoom() { const n = val("nrName"); if (!n) { toast("ใส่ชื่อห้องก่อน"); return false; } if (S.rooms.some(x => x.name === n)) { toast("มีห้องนี้แล้ว"); return false; }
+      const r = { id: uid(), name: n, students: [] }; S.rooms.push(r);
+      const nc = newCourse(r.id, c.subject, JSON.parse(JSON.stringify(c.cols))); S.courses.push(nc); S.cur = nc.id; S.tab = "stu";
+      toast(`เพิ่มห้อง ${n} (วิชา ${c.subject}) — วางรายชื่อได้เลย`); },
+    addCol() { const n = val("ncolName"), m = +val("ncolMax"), g = val("ncolGrp"); if (!n || !(m > 0)) { toast("ใส่ชื่อช่องและคะแนนเต็ม"); return false; }
+      const grp = colById(c, g), id = "c" + uid(), at = c.cols.indexOf(grp);
+      c.cols.splice(at, 0, { id, name: n, max: m, kind: "in" }); grp.src.push(id); toast("เพิ่มช่องแล้ว — คะแนนเต็มรวมเปลี่ยนตาม"); },
+    async delCol() { const id = tr.dataset.cid, x = colById(c, id); if (!await ask(`ลบช่อง "${x.name}" และคะแนนในช่องนี้ทั้งหมด?`)) return false;
+      if (c.nb?.link === id) c.nb.link = null; c.cols = c.cols.filter(y => y.id !== id); c.cols.forEach(y => { if (y.src) y.src = y.src.filter(z => z !== id); });
+      for (const s in c.scores) delete c.scores[s][id]; },
+    async delCourse() { if (S.courses.length === 1) { toast("ต้องมีอย่างน้อย 1 วิชา"); return false; } if (!await ask(`ลบวิชา ${c.subject} ของ ${room.name} และคะแนน/เช็กชื่อทั้งหมด?`)) return false;
+      S.courses = S.courses.filter(x => x.id !== c.id); S.cur = (roomCourses(room.id)[0] || S.courses[0]).id; },
+    async delRoom() { if (S.rooms.length === 1) { toast("ต้องมีอย่างน้อย 1 ห้อง"); return false; } if (!await ask(`ลบห้อง ${room.name} รายชื่อ และทุกวิชาของห้องนี้?`)) return false;
+      if (!await ask("ยืนยันอีกครั้ง: กู้คืนไม่ได้ถ้าไม่ได้สำรองไว้")) return false;
+      S.rooms = S.rooms.filter(x => x.id !== room.id); S.courses = S.courses.filter(x => x.roomId !== room.id); S.cur = S.courses[0].id; },
+    backup() { download(`SmartGrade_สำรอง_${today()}.json`, JSON.stringify(S), "application/json"); S.lastBackup = Date.now(); toast("ดาวน์โหลดไฟล์สำรองแล้ว"); },
+    async reset() { if (!await ask("เริ่มใหม่ทั้งหมด? รายชื่อ คะแนน และการเช็กชื่อที่บันทึกในเครื่องนี้จะหายทั้งหมด แนะนำให้สำรองข้อมูลก่อน")) return false; if (!await ask("ยืนยันอีกครั้ง")) return false; S = defaults(); migrate(); },
+    print() { window.print(); return false; },
+    csvScore() {
+      const head = ["ที่", "ชื่อ", "นามสกุล", ...c.cols.map(x => `${x.name} (${fmt(colMax(c, x), 2)})`), "เกรด"];
+      const meta = [[S.settings.school], [`วิชา ${c.subject}  ระดับชั้น ${room.name}  ภาคเรียนที่ ${S.settings.term}  ครูผู้สอน ${S.settings.teacher}`], []];
+      csv(fn(c, "คะแนน"), [...meta, head, ...sortedStu(c).map(s => [s.no, (LONGP[s.prefix] ?? s.prefix) + s.first, s.last, ...c.cols.map(x => cellOut(c, s.id, x)), gradeOf(c, s.id)])]); return false; },
+    csvAtt() { const ds = Object.keys(c.att).sort(); csv(fn(c, "เวลาเรียน"), [["ที่","ชื่อ-สกุล", ...ds.map(thDate), "มา","สาย","ลา","ป่วย","ขาด","รวม","% เวลาเรียน"], ...sortedStu(c).map(s => { const a = attStat(c, s.id); return [s.no, fullName(s), ...ds.map(d => c.att[d][s.id] || ""), a.ม, a.ส, a.ล, a.ป, a.ข, a.tot, a.pct == null ? "" : fmt(a.pct)]; })]); return false; },
+    csvWork() { csv(fn(c, "งาน"), [["ที่","ชื่อ-สกุล", ...c.works.flatMap(w => [`${w.name} (เต็ม ${fmt(w.max, 2)})`, "สถานะ"]), "ค้าง", "% ส่งงาน"], ...sortedStu(c).map(s => { const w = workStat(c, s.id); return [s.no, fullName(s), ...c.works.flatMap(x => { const p = wScore(c, x, s.id); return [p == null ? "" : fmt(p, 2), WST[(c.sub[x.id] || {})[s.id]] || ""]; }), w.no, w.pct == null ? "" : fmt(w.pct, 0)]; })]); return false; },
+  }[a];
+  if (!act) return;
+  const res = act();
+  if (res instanceof Promise) res.then(v => { if (v !== false) { save(); render(); } });
+  else if (res !== false) { save(); render(); }
+});
+main.addEventListener("change", e => {
+  const c = C(), t = e.target, tr = t.closest("tr");
+  if (t.id === "attDate") { S.attDate = t.value || today(); save(); return render(); }
+  if (t.id === "workSel") { S.workSel = t.value; save(); return render(); }
+  if (t.dataset.w) { const w = c.works.find(x => x.id === S.workSel); if (!w) return; const f = t.dataset.w, v = t.value;
+    if (f === "how") w.how = v.split(/\n/).map(x => x.trim()).filter(Boolean);
+    else if (f === "rub") w.rub = parseRub(v);
+    else if (f === "max") { if (!(+v > 0)) { toast("คะแนนเต็มต้องมากกว่า 0"); return render(); } w.max = +v; }
+    else if (f === "col") { w.col = v || null; const x = colById(c, v); if (x) { w.max = +x.max; adoptScores(c, w); toast(`ใส่คะแนนงานนี้ลงช่อง "${x.name}" แล้ว (คะแนนเต็ม ${x.max})`); } }
+    else w[f] = f === "name" ? (v.trim() || w.name) : v.trim();
+    save(); render(); const d = main.querySelector("details.wedit"); if (d) d.open = true; return; }
+  if (t.dataset.ws && tr?.dataset.sid) {
+    const w = c.works.find(x => x.id === t.dataset.ws), sid = tr.dataset.sid, v = t.value.trim(), max = +w.max, row = (c.wsc ||= {})[w.id] ||= {};
+    if (v === "") { delete row[sid]; t.classList.remove("bad"); }
+    else if (isNaN(v) || +v < 0 || +v > max) { t.classList.add("bad"); toast(`คะแนนงานนี้ต้องอยู่ระหว่าง 0–${max}`); return; }
+    else { row[sid] = +v; t.classList.remove("bad"); const sub = c.sub[w.id] ||= {}; if (!sub[sid] || sub[sid] === "no") sub[sid] = "ok"; }
+    save(); updateWorkRow(c, tr);
+    setTimeout(() => { const f = document.activeElement, fs = f?.dataset?.ws ? f.closest("tr")?.dataset.sid : null; render();
+      if (fs) { const n = main.querySelector(`tr[data-sid="${fs}"] input[data-ws]`); if (n) { n.focus(); n.select(); } } }, 0);
+    return; }
+  if (t.id === "nbSel") { S.nbSel = t.value; save(); return render(); }
+  if (t.id === "nbDate" || t.id === "nbTitle") { const nb = NB(c), k = nb.checks.find(x => x.id === S.nbSel); if (!k) return;
+    if (t.id === "nbDate") { k.date = t.value || k.date; nb.checks.sort((x, y) => x.date.localeCompare(y.date)); } else k.title = t.value.trim() || k.title; save(); return render(); }
+  if (t.id === "nbLink") { NB(c).link = t.value || null; save(); toast(t.value ? "ใส่คะแนนสมุดลงในตารางคะแนนแล้ว" : "เอาคะแนนสมุดออกจากตารางคะแนนแล้ว"); return render(); }
+  if (t.id === "nbMax") { NB(c).max = +t.value || 0; save(); return render(); }
+  if (t.id === "restore") {
+    const f = t.files[0]; if (!f) return;
+    f.text().then(async txt => { const d = JSON.parse(txt); if (!d.rooms || !d.courses || !d.settings) throw 0;
+      if (!await ask(`นำเข้าไฟล์ ${f.name}? ข้อมูลปัจจุบันในเครื่องนี้จะถูกแทนที่`)) return; S = d; migrate(); save(); render(); toast("นำเข้าข้อมูลเรียบร้อย"); })
+      .catch(() => toast("ไฟล์ไม่ถูกต้อง"));
+    return;
+  }
+  if (t.dataset.f) { const s = R(c).students.find(x => x.id === tr.dataset.sid); s[t.dataset.f] = t.dataset.f === "no" ? (+t.value || t.value) : t.value.trim(); save(); return; }
+  if (t.dataset.cid && tr?.dataset.sid) {
+    const v = t.value.trim(), max = +t.dataset.max, row = c.scores[tr.dataset.sid] ||= {};
+    if (v === "") { delete row[t.dataset.cid]; t.classList.remove("bad"); }
+    else if (isNaN(v) || +v < 0 || +v > max) { t.classList.add("bad"); toast(`คะแนนช่องนี้ต้องอยู่ระหว่าง 0–${max}`); return; }
+    else { row[t.dataset.cid] = +v; t.classList.remove("bad"); }
+    save(); updateScoreRow(c, tr); return;
+  }
+  if (t.dataset.set) { S.settings[t.dataset.set] = t.dataset.set === "thr" ? (+t.value || 0) : t.value; save(); return; }
+  if (t.dataset.course) { c[t.dataset.course] = t.value.trim() || c[t.dataset.course]; save(); renderHeader(); return; }
+  if (t.dataset.room) { R(c).name = t.value.trim() || R(c).name; save(); renderHeader(); return; }
+  if (t.dataset.col) { const x = colById(c, tr.dataset.cid); x[t.dataset.col] = t.dataset.col === "max" ? (+t.value || 0) : t.value; save(); return render(); }
+  if (t.dataset.crit) { S.settings.criteria[+tr.dataset.ci][+t.dataset.crit] = +t.value || 0; save(); return; }
+});
+main.addEventListener("keydown", e => {
+  if (e.key !== "Enter" || !e.target.matches("input.sc[data-cid], input.sc[data-ws]")) return;
+  e.preventDefault();
+  const td = e.target.closest("td"), idx = [...td.parentNode.children].indexOf(td);
+  const next = td.parentNode.nextElementSibling?.children[idx]?.querySelector("input");
+  e.target.dispatchEvent(new Event("change", { bubbles: true }));
+  if (next) { next.focus(); next.select(); } else e.target.blur();
+});
+window.addEventListener("storage", () => { try { S = JSON.parse(localStorage.getItem(KEY)) || S; migrate(); render(); } catch (e) {} });
+migrate(); save(); render();
+</script>
+</body>
+</html>
